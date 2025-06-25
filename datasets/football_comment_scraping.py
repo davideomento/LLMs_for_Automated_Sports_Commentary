@@ -1,89 +1,97 @@
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
+from youtube_transcript_api import YouTubeTranscriptApi
 import json
-import time
+import math
+import re 
+import os
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
+
+# Function to create a safe filename by removing/replacing invalid characters
+def safe_filename(s):
+    return re.sub(r'[^\w\-]', '_', s)
+
+video_id = "uSAbUjzFqMg"
+
+# Define match metadata
+match_name = "Atletico Madrid vs Real Madrid"
+match_date = "2025-03-12"
+competition_stage = "Champions League Round of 16"
+
+# Define start and end times in seconds
+start_seconds = 16 * 60 + 2  # 24 minutes 45 seconds
+end_seconds = (3 * 3600) + (4 * 60) + 2  # 2 hours 17 minutes 36 seconds
+
+# Fetch available transcripts for the video
+transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+
+try:
+    # Try to get manually created English transcript
+    transcript = transcript_list.find_transcript(['en'])
+except:
+    # If not available, fallback to auto-generated English transcript
+    transcript = transcript_list.find_generated_transcript(['en'])
+
+# Fetch the transcript data (list of transcript entries)
+transcript_data = transcript.fetch()
+
+commentary_by_minute = {}
+
+# Iterate over each transcript snippet
+for entry in transcript_data:
+    start_time = entry.start  # start time in seconds
+
+    # Skip entries outside the desired time range
+    if start_time < start_seconds or start_time > end_seconds:
+        continue
+
+    # Calculate minute relative to video start time
+    minute = math.floor((start_time - start_seconds) / 60) + 1
+
+    # Clean subtitle text (remove line breaks)
+    text = entry.text.replace('\n', ' ')
+
+    # Group subtitles by minute
+    if minute not in commentary_by_minute:
+        commentary_by_minute[minute] = []
+    commentary_by_minute[minute].append(text)
+
+# Prepare final commentary list combining texts per minute
+commentary_list = []
+
+for minute, texts in sorted(commentary_by_minute.items()):
+    combined_comment = " ".join(texts)
+
+    # Determine half based on minute number
+    half = "1st half" if minute <= 55 else "2nd half"
+
+    commentary_list.append({
+        "minute": f"{minute}'",
+        "half": half,
+        "comment": combined_comment
+    })
+
+# Combine metadata and commentary in one dictionary
+output = {
+    "metadata": {
+        "match_name": match_name,
+        "match_date": match_date,
+        "competition_stage": competition_stage,
+        "start_time_seconds": start_seconds,
+        "end_time_seconds": end_seconds
+    },
+    "commentary": commentary_list
 }
 
-# Step 1 – Estrai gli URL delle partite da una data
-def get_match_urls_from_scores_fixtures(date_str):
-    base_url = f"https://www.bbc.com/sport/football/scores-fixtures/{date_str}"
-    response = requests.get(base_url, headers=headers)
+filename = f"{safe_filename(match_name)}_{match_date}_{safe_filename(competition_stage)}.json"
 
-    if response.status_code != 200:
-        print(f"⚠️ Failed to fetch match list for {date_str}")
-        return []
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    links = soup.find_all("a", href=True)
 
-    match_urls = set()
-    for link in links:
-        href = link["href"]
-        if "/sport/live/football/" in href:
-            full_url = "https://www.bbc.com" + href.split("?")[0]  # Clean query params
-            match_urls.add(full_url)
+# Ensure the 'data' folder exists
+os.makedirs("data", exist_ok=True)
 
-    return list(match_urls)
+# Save dataset as JSON file inside the 'data' folder
+filepath = os.path.join("data", filename)
+with open(filepath, "w", encoding="utf-8") as f:
+    json.dump(output, f, indent=2, ensure_ascii=False)
 
-# Step 2 – Estrai la cronaca testuale da un singolo URL
-def scrape_bbc_commentary(url):
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        print(f"⚠️ Failed to retrieve: {url}")
-        return []
-
-    soup = BeautifulSoup(response.text, "html.parser")
-    events = soup.find_all("div", class_="lx-commentary__event")
-
-    commentary_data = []
-    for event in events:
-        minute_tag = event.find("span", class_="lx-commentary__time")
-        text_tag = event.find("p", class_="lx-commentary__body")
-
-        if minute_tag and text_tag:
-            commentary_data.append({
-                "minute": minute_tag.get_text(strip=True),
-                "text": text_tag.get_text(strip=True)
-            })
-
-    return commentary_data
-
-# Step 3 – Loop su più giorni e salva le cronache
-def collect_commentaries(start_date, end_date, output_file="bbc_all_commentaries.json"):
-    current_date = start_date
-    all_data = []
-
-    while current_date <= end_date:
-        date_str = current_date.strftime("%Y-%m-%d")
-        print(f"\n📅 Processing matches on {date_str}")
-        match_urls = get_match_urls_from_scores_fixtures(date_str)
-
-        for url in match_urls:
-            print(f"🔍 Scraping: {url}")
-            commentary = scrape_bbc_commentary(url)
-            if commentary:
-                all_data.append({
-                    "date": date_str,
-                    "url": url,
-                    "commentary": commentary
-                })
-            time.sleep(1.5)  # Rispetta i limiti del server
-
-        current_date += timedelta(days=1)
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(all_data, f, indent=2, ensure_ascii=False)
-
-    print(f"\n✅ Finished scraping. Total matches saved: {len(all_data)}")
-
-# === MAIN ===
-if __name__ == "__main__":
-    # Imposta l'intervallo di date (esempio: 1 settimana)
-    start = datetime.strptime("2024-06-01", "%Y-%m-%d")
-    end = datetime.strptime("2024-06-07", "%Y-%m-%d")
-
-    collect_commentaries(start, end)
+print(f"Saved commentary for {len(commentary_list)} minutes ({match_name} on {match_date}, {competition_stage}).")
+print(f"File saved as: {filepath}")
