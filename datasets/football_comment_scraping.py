@@ -9,16 +9,15 @@ import os
 def safe_filename(s):
     return re.sub(r'[^\w\-]', '_', s)
 
-video_id = "uSAbUjzFqMg"
+video_id = "7yvlN9H3RQc"
 
 # Define match metadata
-match_name = "Atletico Madrid vs Real Madrid"
-match_date = "2025-03-12"
-competition_stage = "Champions League Round of 16"
+match_name = "Newcastle VS Arsenal"
+match_date = "2025-02-05"
+competition_stage = "Premier League Matchday 25"
 
-# Define start and end times in seconds
-start_seconds = 16 * 60 + 2  # 24 minutes 45 seconds
-end_seconds = (3 * 3600) + (4 * 60) + 2  # 2 hours 17 minutes 36 seconds
+# Define start times in seconds
+start_seconds = 15*60 + 20
 
 # Fetch available transcripts for the video
 transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
@@ -40,7 +39,7 @@ for entry in transcript_data:
     start_time = entry.start  # start time in seconds
 
     # Skip entries outside the desired time range
-    if start_time < start_seconds or start_time > end_seconds:
+    if start_time < start_seconds:
         continue
 
     # Calculate minute relative to video start time
@@ -59,6 +58,13 @@ commentary_list = []
 
 for minute, texts in sorted(commentary_by_minute.items()):
     combined_comment = " ".join(texts)
+    
+    # Conta le parole
+    word_count = len(combined_comment.split())
+    
+    # Salta i minuti con meno di 10 parole
+    if word_count < 10:
+        continue
 
     # Determine half based on minute number
     half = "1st half" if minute <= 55 else "2nd half"
@@ -76,10 +82,11 @@ output = {
         "match_date": match_date,
         "competition_stage": competition_stage,
         "start_time_seconds": start_seconds,
-        "end_time_seconds": end_seconds
+        "video_id": video_id  # <--- aggiunta dell'ID del video
     },
     "commentary": commentary_list
 }
+
 
 filename = f"{safe_filename(match_name)}_{match_date}_{safe_filename(competition_stage)}.json"
 
