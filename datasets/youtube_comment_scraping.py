@@ -93,10 +93,10 @@ filename = f"{safe_filename(match_name)}_{match_date}_{safe_filename(competition
 
 
 # Ensure the 'data' folder exists
-os.makedirs("data", exist_ok=True)
+os.makedirs("data/youtube", exist_ok=True)
 
 # Save dataset as JSON file inside the 'data' folder
-filepath = os.path.join("data", filename)
+filepath = os.path.join("data/youtube", filename)
 with open(filepath, "w", encoding="utf-8") as f:
     json.dump(output, f, indent=2, ensure_ascii=False)
 
