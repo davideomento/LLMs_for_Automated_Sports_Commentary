@@ -7,6 +7,8 @@ My Master's Thesis in Mathematical Engineering
 - Find golden-standard dataset with accurate and rich comment
 
 ### Website, RAG dataset
+For now I used FantasyPremierLeague, I only considered last 3 seasons and  generated textual description for each seasons and for each games week
+
 1)	https://www.football-data.co.uk/
 •  CSV con risultati, date, squadre, goal, xG, etc. (Serie A inclusa).
 •  Perfetto per basi statistiche.

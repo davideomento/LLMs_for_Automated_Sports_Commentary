@@ -22,7 +22,7 @@ element_types = {
 }
 
 # Anni da considerare
-seasons = [f"{y}-{str(y+1)[-2:]}" for y in range(2016, 2025)]
+seasons = [f"{y}-{str(y+1)[-2:]}" for y in range(2022, 2025)]
 
 documents = []
 
@@ -49,8 +49,6 @@ for season in seasons:
         Name: {name}
         Team: {team}
         Position: {position}
-        Nationality: {row.get('nationality', 'Unknown')}
-        Date of Birth: {row.get('date_of_birth', 'Unknown')}
         Season: {season}
         
         Minutes Played: {row['minutes']}
@@ -63,7 +61,20 @@ for season in seasons:
         
         Status: {row['status']}
         """
-        documents.append(doc.strip())
+        description = (
+            f"{name} played for {team} as a {position} during the {season} season. "
+            f"He played {row['minutes']} minutes, scored {row['goals_scored']} goals, "
+            f"provided {row['assists']} assists, and kept {row['clean_sheets']} clean sheets. "
+            f"He received {row['yellow_cards']} yellow cards and {row['red_cards']} red cards. "
+            f"His status was '{row['status']}' at the end of the season."
+        )
+        documents.append({
+            "player": name,
+            "season": season,
+            "team": team,
+            "position": position,
+            "text": description
+        })
 
 # Salva in JSON
 os.makedirs("data/RAG", exist_ok=True)
