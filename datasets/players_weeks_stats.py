@@ -45,7 +45,7 @@ for csv_file in glob.glob("data/RAG/fpl/data/*/gws/gw*.csv"):
                 "minutes": safe_get(row, "minutes"),
                 "position": safe_get(row, "position"),
                 "goals": safe_get(row, "goals_scored"),
-                "assists": safe_get(row, "assists"),c
+                "assists": safe_get(row, "assists"),
                 "goals_conceded": safe_get(row, "goals_conceded"),
                 "saves": safe_get(row, "saves"),
                 "clean_sheets": safe_get(row, "clean_sheets"),
