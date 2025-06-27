@@ -37,3 +37,8 @@ Contacted them, waiting for a response:
 - https://sportradar.com/
 - https://www.statsperform.com/
 - https://www.football-data.org/
+
+# What I've done till now
+- Youtube comment scraping(rich but dirty) and dataset from papers(poor but clean)
+- retrieval ready dataset preprocessed and prepared from FantasyPremierLeague
+- Indexing(faiss)+Embedding(SentenceTrasformer)
