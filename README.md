@@ -42,3 +42,4 @@ Contacted them, waiting for a response:
 - Youtube comment scraping(rich but dirty) and dataset from papers(poor but clean)
 - retrieval ready dataset preprocessed and prepared from FantasyPremierLeague
 - Indexing(faiss)+Embedding(SentenceTrasformer)
+- created file .faiss and metadata.json
