@@ -2,11 +2,11 @@ import json
 import re
 
 # Carica i documenti
-with open("data/RAG/player_docs_clean.json") as f:
+with open("data/raw/player_season_docs_clean.json") as f:
     docs = json.load(f)
 
 # Filtra per stagione 2016-2017
-season_docs = [doc for doc in docs if "Season: 2016-17" in doc]
+season_docs = [doc for doc in docs if "Season: 2023-24" in doc]
 
 top_scorer = None
 max_goals = -1
