@@ -43,3 +43,4 @@ Contacted them, waiting for a response:
 - retrieval ready dataset preprocessed and prepared from FantasyPremierLeague
 - Indexing(faiss)+Embedding(SentenceTrasformer)
 - created file .faiss and metadata.json
+- Implement query retrieval functionality with FAISS and Sentence Transformers
