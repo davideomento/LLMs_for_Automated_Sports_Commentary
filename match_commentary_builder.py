@@ -1,5 +1,3 @@
-# match_commentary_builder.py
-
 def collect_match_context():
     print("=== Match Setup ===")
     home_team = input("Home team: ")
