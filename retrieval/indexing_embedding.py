@@ -1,4 +1,4 @@
-import json
+from import json
 from sentence_transformers import SentenceTransformer
 import faiss
 
