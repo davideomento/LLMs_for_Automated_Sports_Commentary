@@ -55,6 +55,10 @@ Below are simple, factual templates (no emotion) for common football events. Fil
 - “{minute}’ Goal by {player} for {team}.”
 - “Goal at {minute}’: {player} scores for {team}.”
 
+## Assisted Goal
+“{minute}’ Goal by {player} for {team}, assisted by {assist_player}.”
+“Goal at {minute}’: {player} scores for {team}, assisted by {assist_player}.”
+
 ## Own Goal
 - “{minute}’ Own goal by {player} (for {opponent}).”
 - “Own goal at {minute}’ credited to {player}.”
