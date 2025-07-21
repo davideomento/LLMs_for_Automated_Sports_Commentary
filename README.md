@@ -45,7 +45,7 @@ Contacted them, waiting for a response:
 - created file .faiss and metadata.json
 - Implement query retrieval functionality with FAISS and Sentence Transformers
 
-
+# Simple Model()
 # Input template
 # Live Text Commentary Templates
 
