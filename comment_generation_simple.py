@@ -63,11 +63,13 @@ def format_prompt(event, context, match_context, current_score):
         "yellow_cards": 4,
         "red_cards": 0
     }}
-
-    ### Commentary:
+    
+    ### Example:
     32' – It's Gabriel Jesus with the breakthrough! The Brazilian striker finds a pocket of space inside the box and lashes it past Ederson!  
     That’s his third goal of the season, and what a moment to get it against his former club! With 600 minutes played and 2 assists last season,  
     he's proving his worth up front again. Arsenal takes the lead, 1–0!
+
+    ### Commentary:
     """
 
     return prompt.strip()
