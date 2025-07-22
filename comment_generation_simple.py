@@ -15,7 +15,7 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Prompt formatting function with match info and score
-def build_prompt_with_example(match_context, current_score, lineup, event, context, example_commentary):
+def build_prompt_with_example(home_team, away_team, current_score, lineup, event, context):
     player = context["name"]
     minute = event["minute"]
     event_type = event["type"].capitalize()
@@ -40,7 +40,7 @@ RULES (follow strictly):
 - Always use the player's and team's name as given in the context.
 
 --- MATCH INFO ---
-Match: {match_context["home_team"]} vs {match_context["away_team"]}
+Match: {home_team["home_team"]} vs {away_team["away_team"]}
 Current Score: {current_score}  
 Starting Lineup:  
 {lineup}
