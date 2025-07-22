@@ -39,10 +39,3 @@ else:
     copytree(cache_path, drive_model_path, dirs_exist_ok=True)
     tokenizer.save_pretrained(drive_model_path)
 
-# Inferenzia un prompt
-prompt = "Hi! What is the capital of France?"
-inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-outputs = model.generate(**inputs, max_new_tokens=100)
-response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-print("🧠 Risposta:", response)
