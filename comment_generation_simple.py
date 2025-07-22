@@ -76,7 +76,7 @@ example_commentary = (
 )
 
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
-new_event = {"minute": 45, "type": "yellow_card", "player": "Martin Ødegaard"}
+new_event = {"minute": 45, "type": "yellow_card", "player": "Romelu Lukaku"}
 new_context = {
     "name": "Romelu Lukaku",
     "position": "MID",
