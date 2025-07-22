@@ -61,6 +61,7 @@ Do NOT mention stats that are zero or missing.
 }}
 
 ### Commentary:
+Minute {minute}:
 """
 
     return prompt.strip()
