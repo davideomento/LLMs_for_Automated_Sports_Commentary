@@ -35,6 +35,8 @@ Do NOT mention stats that are zero or missing.
 
 4) Use dynamic, natural language to describe only the current event.
 
+4.1) Always mention the minute of the event in the commentary to give a sense of live timing.
+
 5) Commentary must only reflect the provided data, no hallucinations or invented details.
 
 ### Match:
