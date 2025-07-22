@@ -1,5 +1,12 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import re
+
+def trim_to_last_complete_sentence(text):
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    return " ".join(sentences[:-1]) if len(sentences) > 1 else text
+
+
 
 # Load tokenizer and model from local path (e.g., Google Drive)
 drive_model_path = "/content/drive/MyDrive/mistral_model"
@@ -114,8 +121,12 @@ outputs = model.generate(
 generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 if "Commentary:" in generated_text:
     commentary = generated_text.split("Commentary:")[1].strip()
+    commentary = trim_to_last_complete_sentence(commentary)
+
 else:
     commentary = generated_text
+    commentary = trim_to_last_complete_sentence(commentary)
+
 
 print("\n🎙️ Commentary for new event:")
 print(commentary)
