@@ -15,10 +15,7 @@ drive_model_path = "/content/drive/MyDrive/mistral_model"
 model_name = "mistralai/Mistral-7B-Instruct-v0.1"
 
 # Log in a Hugging Face (usa la tua variabile d'ambiente o inserisci direttamente)
-hf_token = os.getenv('HF_TOKEN')
-if not hf_token:
-    print("Variabile HF_TOKEN non trovata, metti il token direttamente nel login.")
-    hf_token = "hf_TUO_TOKEN"
+hf_token = "YOUR_HUGGING_FACE_TOKEN"  # Replace with your actual token
 
 login(hf_token)
 
