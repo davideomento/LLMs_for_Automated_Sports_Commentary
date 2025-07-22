@@ -40,7 +40,7 @@ RULES (follow strictly):
 - Always use the player's and team's name as given in the context.
 
 --- MATCH INFO ---
-Match: {home_team["home_team"]} vs {away_team["away_team"]}
+Match: {home_team} vs {away_team}
 Current Score: {current_score}  
 Starting Lineup:  
 {lineup}
