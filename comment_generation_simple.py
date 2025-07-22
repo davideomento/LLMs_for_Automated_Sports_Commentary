@@ -15,94 +15,92 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Prompt formatting function with match info and score
-def format_prompt(event, context, match_context, current_score):
+def build_prompt_with_example(match_context, current_score, lineup, event, context, example_commentary):
     player = context["name"]
     minute = event["minute"]
-    event_type = event["type"].replace("_", " ").capitalize()
-
-# Updated Prompt Template with Example
+    event_type = event["type"].capitalize()
 
     prompt = f"""
-    1) You are a football commentator.
+1) You are a football commentator.
 
-    2) Your job is to generate exciting and vivid real-time football commentary based on:
-    - The current match event
-    - The player involved
-    - The player's key stats from last season
-    - The match being played
-    - The current score
+2) Your job is to generate exciting and vivid real-time football commentary based on:
+- The current match event
+- The player involved
+- The player's key stats from last season
+- The match being played
+- The current score
 
-    3) Use dynamic, natural language.
+3) Use dynamic, natural language.
 
-    4) Describe the event in an entertaining way, as if you were commentating live on TV.
+4) Describe the event in an entertaining way, as if you were commentating live on TV.
 
-    5) Focus on the player's most relevant stats from last season, such as goals, assists, red cards, yellow cards, and minutes played.
+5) Focus on the player's most relevant stats from last season, such as goals, assists, red cards, yellow cards, and minutes played.
 
-    6) Do not say things out of context; only use the information provided.
+6) Do not say things out of context; only use the information provided.
 
-    7) You will be given the following information:
+7) You will be given the following information:
 
-    ### Match:
-    - Arsenal vs Manchester City
-    - Current Score: 1-0
-    - Starting Lineup: 
-    Arsenal: Ramsdale, White, Saliba, Gabriel, Zinchenko, Rice, Ødegaard, Havertz, Saka, Martinelli, Gabriel Jesus
-    Manchester City: Ederson, Walker, Aké, Dias, Gvardiol, Rodri, Bernardo, De Bruyne, Foden, Doku, Haaland
+### Match:
+- {match_context}
+- Current Score: {current_score}
+- Starting Lineup: 
+{lineup}
 
-    ### Event:
-    - Minute: 32
-    - Type: Goal
-    - Player: Gabriel Jesus
+### Event:
+- Minute: {minute}
+- Type: {event_type}
+- Player: {player}
 
-    ### Player key Stats from last season:
-    {{ 
-        "position": "FWD",
-        "goals": 3,
-        "assists": 2,
-        "minutes_played": 600,
-        "yellow_cards": 4,
-        "red_cards": 0
-    }}
-    
-    ### Example:
-    32' – It's Gabriel Jesus with the breakthrough! The Brazilian striker finds a pocket of space inside the box and lashes it past Ederson!  
-    That’s his third goal of the season, and what a moment to get it against his former club! With 600 minutes played and 2 assists last season,  
-    he's proving his worth up front again. Arsenal takes the lead, 1–0!
+### Player key Stats from last season:
+{{ 
+    "position": "{context.get("position", "N/A")}",
+    "goals": {context.get("goals", 0)},
+    "assists": {context.get("assists", 0)},
+    "minutes_played": {context.get("minutes_played", 0)},
+    "yellow_cards": {context.get("yellow_cards", 0)},
+    "red_cards": {context.get("red_cards", 0)}
+}}
 
-    ### Commentary:
-    """
+### Example:
+{example_commentary}
 
+### Commentary:
+"""
     return prompt.strip()
 
-# Example input
-match_context = "Arsenal vs Manchester City"
-current_score = "1-1"
-event = {"minute": "47", "type": "assist", "player": "Kevin De Bruyne"}
-context = {
-    "name": "Kevin De Bruyne",
+# Primo evento (esempio fisso)
+example_commentary = (
+    "32' – It's Gabriel Jesus with the breakthrough! The Brazilian striker finds a pocket of space inside the box and lashes it past Ederson! "
+    "That’s his third goal of the season, and what a moment to get it against his former club! With 600 minutes played and 2 assists last season, "
+    "he's proving his worth up front again. Arsenal takes the lead, 1–0!"
+)
+
+# Nuovo evento (per testare il modello senza fornire un nuovo esempio)
+new_event = {"minute": 45, "type": "yellow_card", "player": "Martin Ødegaard"}
+new_context = {
+    "name": "Martin Ødegaard",
     "position": "MID",
     "goals": 5,
-    "assists": 16,
-    "minutes_played": 2100,
+    "assists": 7,
+    "minutes_played": 1100,
     "yellow_cards": 2,
-    "red_cards": 0,
-    "lineup": {
-        "Arsenal": [
-            "Ramsdale", "White", "Saliba", "Gabriel", "Zinchenko",
-            "Rice", "Ødegaard", "Havertz", "Saka", "Martinelli", "Gabriel Jesus"
-        ],
-        "Manchester City": [
-            "Ederson", "Walker", "Aké", "Dias", "Gvardiol",
-            "Rodri", "Bernardo", "De Bruyne", "Foden", "Doku", "Haaland"
-        ]
-    }
+    "red_cards": 0
 }
 
-# Build and tokenize prompt
-prompt = format_prompt(event, context, match_context, current_score)
-inputs = tokenizer(prompt, return_tensors="pt").to(device)
+prompt = build_prompt_with_example(
+    match_context="Arsenal vs Manchester City",
+    current_score="1-0",
+    lineup=(
+        "Arsenal: Ramsdale, White, Saliba, Gabriel, Zinchenko, Rice, Ødegaard, Havertz, Saka, Martinelli, Gabriel Jesus\n"
+        "Manchester City: Ederson, Walker, Aké, Dias, Gvardiol, Rodri, Bernardo, De Bruyne, Foden, Doku, Haaland"
+    ),
+    event=new_event,
+    context=new_context,
+    example_commentary=example_commentary
+)
 
-# Generate model output
+# Passa prompt al modello e genera output
+inputs = tokenizer(prompt, return_tensors="pt").to(device)
 outputs = model.generate(
     inputs["input_ids"],
     attention_mask=inputs["attention_mask"],
@@ -114,10 +112,11 @@ outputs = model.generate(
     pad_token_id=tokenizer.eos_token_id,
 )
 
-# Decode and extract commentary
 generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 if "Commentary:" in generated_text:
-    print("\n🎙️ Commentary:")
-    print(generated_text.split("Commentary:")[1].strip())
+    commentary = generated_text.split("Commentary:")[1].strip()
 else:
-    print(generated_text)
+    commentary = generated_text
+
+print("\n🎙️ Commentary for new event:")
+print(commentary)
