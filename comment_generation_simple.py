@@ -49,7 +49,7 @@ Minute: {minute}
 Event Type: {event_type}  
 Player: {player}
 
---- PLAYER STATS LAST SEASON ---
+--- {player} STATS LAST SEASON ---
 Position: {context.get("position", "N/A")}  
 Goals: {context.get("goals", 0)}  
 Assists: {context.get("assists", 0)}  
