@@ -1,3 +1,7 @@
+import os
+
+print(os.getenv('HF_TOKEN'))
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from huggingface_hub import login
 import torch
