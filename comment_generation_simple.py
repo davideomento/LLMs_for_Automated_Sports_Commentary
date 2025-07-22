@@ -40,7 +40,7 @@ RULES (follow strictly):
 - Always use the player's and team's name as given in the context.
 
 --- MATCH INFO ---
-Match: {match_context}  
+Match: {match_context["home_team"]} vs {match_context["away_team"]}
 Current Score: {current_score}  
 Starting Lineup:  
 {lineup}
@@ -59,7 +59,8 @@ Yellow Cards: {context.get("yellow_cards", 0)}
 Red Cards: {context.get("red_cards", 0)}
 
 --- EXAMPLE FORMAT ---
-"At the 23rd minute, [Player] surges down the right wing and whips in a cross! With [X goals] and [Y assists] last season, he's always a danger man in these situations."
+"{player} surges down the right wing and whips in a cross! With {context.get("goals", 0)} and {context.get("assists", 0)} last season, he's always a danger man in these situations."
+"{player} doas a bad tackle and receives a yellow card! Last season, he had {context.get("yellow_cards", 0)} yellow cards and {context.get("red_cards", 0)} red cards, he's known for having good discipline on the pitch."
 
 --- COMMENTARY ---
 Minute {minute}:
@@ -77,7 +78,7 @@ example_commentary = (
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
 new_event = {"minute": 45, "type": "yellow_card", "player": "Martin Ødegaard"}
 new_context = {
-    "name": "Martin Ødegaard",
+    "name": "Romelu Lukaku",
     "position": "MID",
     "goals": 5,
     "assists": 7,
@@ -87,7 +88,8 @@ new_context = {
 }
 
 prompt = build_prompt_with_example(
-    match_context="Arsenal vs Manchester City",
+    home_team="Arsenal",
+    away_team="Manchester City",
     current_score="1-0",
     lineup=(
         "Arsenal: Ramsdale, White, Saliba, Gabriel, Zinchenko, Rice, Ødegaard, Havertz, Saka, Martinelli, Gabriel Jesus\n"
