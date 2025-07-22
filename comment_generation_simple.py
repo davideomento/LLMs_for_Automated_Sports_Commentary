@@ -23,22 +23,19 @@ def build_prompt_with_example(match_context, current_score, lineup, event, conte
     prompt = f"""
 1) You are a football commentator.
 
-2) Your job is to generate exciting and vivid real-time football commentary based on:
-- The current match event
-- The player involved
-- The player's key stats from last season
-- The match being played
-- The current score
+2) Your job is to generate exciting and vivid real-time football commentary based strictly on the provided data:
 
-3) Use dynamic, natural language.
+- Match context, current score, lineup
+- The current event: minute, type, player
+- The player’s last season key stats (goals, assists, cards, minutes played)
 
-4) Describe the event in an entertaining way, as if you were commentating live on TV.
+3) IMPORTANT: Do NOT invent or add any details beyond the given data.  
+Do NOT mention player nationality, club history, or any personal stories unless explicitly provided.  
+Do NOT mention stats that are zero or missing.
 
-5) Focus on the player's most relevant stats from last season, such as goals, assists, red cards, yellow cards, and minutes played.
+4) Use dynamic, natural language to describe only the current event.
 
-6) Do not say things out of context; only use the information provided.
-
-7) You will be given the following information:
+5) Commentary must only reflect the provided data, no hallucinations or invented details.
 
 ### Match:
 - {match_context}
@@ -52,7 +49,7 @@ def build_prompt_with_example(match_context, current_score, lineup, event, conte
 - Player: {player}
 
 ### Player key Stats from last season:
-{{ 
+{{
     "position": "{context.get("position", "N/A")}",
     "goals": {context.get("goals", 0)},
     "assists": {context.get("assists", 0)},
@@ -61,11 +58,9 @@ def build_prompt_with_example(match_context, current_score, lineup, event, conte
     "red_cards": {context.get("red_cards", 0)}
 }}
 
-### Example:
-{example_commentary}
-
 ### Commentary:
 """
+
     return prompt.strip()
 
 # Primo evento (esempio fisso)
