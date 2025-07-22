@@ -21,46 +21,46 @@ def build_prompt_with_example(match_context, current_score, lineup, event, conte
     event_type = event["type"].capitalize()
 
     prompt = f"""
-1) You are a football commentator.
+You are a live football commentator.
 
-2) Your job is to generate exciting and vivid real-time football commentary based strictly on the provided data:
+Your task is to generate **EXCITING, VIVID, REAL-TIME COMMENTARY** for the following single football event.  
+ONLY use the information provided below — DO NOT guess or invent anything.
 
-- Match context, current score, lineup
-- The current event: minute, type, player
-- The player’s last season key stats (goals, assists, cards, minutes played)
+RULES (follow strictly):
+- Use natural, energetic commentary style.
+- You MUST mention the event minute clearly in the commentary.
+- Only describe the event, not the whole match.
+- DO NOT mention:
+  - Player nationality
+  - Club history
+  - Player backstory
+  - Anything not given explicitly
+- Only include STATS from last season if they are non-zero.
+- DO NOT mention zero stats or make assumptions.
 
-3) IMPORTANT: Do NOT invent or add any details beyond the given data.  
-Do NOT mention player nationality, club history, or any personal stories unless explicitly provided.  
-Do NOT mention stats that are zero or missing.
-
-4) Use dynamic, natural language to describe only the current event.
-
-4.1) Always mention the minute of the event in the commentary to give a sense of live timing.
-
-5) Commentary must only reflect the provided data, no hallucinations or invented details.
-
-### Match:
-- {match_context}
-- Current Score: {current_score}
-- Starting Lineup: 
+--- MATCH INFO ---
+Match: {match_context}  
+Current Score: {current_score}  
+Starting Lineup:  
 {lineup}
 
-### Event:
-- Minute: {minute}
-- Type: {event_type}
-- Player: {player}
+--- EVENT INFO ---
+Minute: {minute}  
+Event Type: {event_type}  
+Player: {player}
 
-### Player key Stats from last season:
-{{
-    "position": "{context.get("position", "N/A")}",
-    "goals": {context.get("goals", 0)},
-    "assists": {context.get("assists", 0)},
-    "minutes_played": {context.get("minutes_played", 0)},
-    "yellow_cards": {context.get("yellow_cards", 0)},
-    "red_cards": {context.get("red_cards", 0)}
-}}
+--- PLAYER STATS LAST SEASON ---
+Position: {context.get("position", "N/A")}  
+Goals: {context.get("goals", 0)}  
+Assists: {context.get("assists", 0)}  
+Minutes Played: {context.get("minutes_played", 0)}  
+Yellow Cards: {context.get("yellow_cards", 0)}  
+Red Cards: {context.get("red_cards", 0)}
 
-### Commentary:
+--- EXAMPLE FORMAT ---
+"At the 23rd minute, [Player] surges down the right wing and whips in a cross! With [X goals] and [Y assists] last season, he's always a danger man in these situations."
+
+--- COMMENTARY ---
 Minute {minute}:
 """
 
