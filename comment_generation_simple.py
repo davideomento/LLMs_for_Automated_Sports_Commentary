@@ -96,9 +96,7 @@ prompt = build_prompt_with_example(
         "Manchester City: Ederson, Walker, Aké, Dias, Gvardiol, Rodri, Bernardo, De Bruyne, Foden, Doku, Haaland"
     ),
     event=new_event,
-    context=new_context,
-    example_commentary=example_commentary
-)
+    context=new_context,)
 
 # Passa prompt al modello e genera output
 inputs = tokenizer(prompt, return_tensors="pt").to(device)
