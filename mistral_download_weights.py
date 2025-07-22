@@ -14,7 +14,7 @@ drive_model_path = "/content/drive/MyDrive/mistral_model"
 model_name = "mistralai/Mistral-7B-Instruct-v0.1"
 
 # Inserisci il tuo token
-hf_token = "hf_..."  # Inserisci il tuo token HF qui
+hf_token = "HF_TOKEN"  # Inserisci il tuo token HF qui
 login(hf_token)
 
 # Se il modello è già presente su Drive, lo carico da lì

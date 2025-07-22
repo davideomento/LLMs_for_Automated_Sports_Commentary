@@ -12,7 +12,7 @@ model.eval()
 
 # Use GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+
 
 # Function to format the input prompt for the model
 def format_prompt(event, context):
