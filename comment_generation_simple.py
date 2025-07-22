@@ -37,6 +37,7 @@ RULES (follow strictly):
   - Anything not given explicitly
 - Only include STATS from last season if they are non-zero.
 - DO NOT mention zero stats or make assumptions.
+- Always use the player's and team's name as given in the context.
 
 --- MATCH INFO ---
 Match: {match_context}  
@@ -104,8 +105,8 @@ outputs = model.generate(
     attention_mask=inputs["attention_mask"],
     max_new_tokens=150,
     do_sample=True,
-    top_p=0.9,
-    temperature=0.8,
+    top_p=0.85,
+    temperature=0.7,
     no_repeat_ngram_size=2,
     pad_token_id=tokenizer.eos_token_id,
 )
