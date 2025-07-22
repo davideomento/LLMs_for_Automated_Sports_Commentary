@@ -1,40 +1,53 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# Percorso modello Mistral salvato su Drive
+# Load tokenizer and model from local path (e.g., Google Drive)
 drive_model_path = "/content/drive/MyDrive/mistral_model"
 
-# Carica tokenizer e modello
 tokenizer = AutoTokenizer.from_pretrained(drive_model_path)
-model = AutoModelForCausalLM.from_pretrained(drive_model_path, device_map="auto")  # o device_map={"": "cuda"} se singola GPU
+model = AutoModelForCausalLM.from_pretrained(drive_model_path, device_map="auto")
 
+# Ensure model is in evaluation mode
 model.eval()
+
+# Use GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-# Usa la tua funzione di prompt
+# Function to format the input prompt for the model
 def format_prompt(event, context):
     player = context["name"]
     minute = event["minute"]
     event_type = event["type"].replace("_", " ").capitalize()
 
-    base = f"Minute {minute}': {event_type} involving {player}.\n"
+    # Base event description
+    base = f"Minute {minute}': {event_type} involving {player}.\n\n"
+
+    # Player statistics
     stats = (
         f"{player} has scored {context['goals']} goals and provided {context['assists']} assists this season. "
-        f"He's played {context['minutes_played']} minutes and shows an influence score of {context['influence']}, "
-        f"threat of {context['threat']}, and creativity of {context['creativity']}."
+        f"He have played {context['minutes_played']} minutes, with an influence score of {context['influence']}, "
+        f"threat of {context['threat']}, and creativity of {context['creativity']}.\n\n"
     )
 
+    # Instruction with input/output examples
     instruction = (
-        "\nYou are a football commentator tasked with generating a realistic commentary for a match event. "
-        "You are given the player's stats and the event details and you have to tell as a commentator would do these events. "
-        "Write an exciting and realistic football commentary based on this event and context. "
-        "Mention the minute and player's name clearly."
+        "You are a football commentator.\n"
+        "Your job is to generate an exciting and natural-sounding commentary based on real-time match events and player statistics.\n"
+        "Mention the minute, player name, and describe the action vividly.\n\n"
+        "### Example Input:\n"
+        "Minute 45': Goal involving Erling Haaland.\n\n"
+        "Erling Haaland has scored 10 goals and provided 2 assists this season. "
+        "He have played 980 minutes, with an influence score of 320.5, threat of 500.0, and creativity of 90.2.\n\n"
+        "### Example Output:\n"
+        "45' – It's Erling Haaland again! A powerful run through the center, and he buries it into the bottom corner! "
+        "Ten goals this season and counting – what a force he's been for City!\n\n"
+        "### Now continue with the following:\n\n"
     )
 
-    return base + stats + instruction
+    return instruction + base + stats + "Commentary:\n"
 
-# Input di esempio
+# Example input
 event = {"minute": "67", "type": "goal", "player": "Gabriel Jesus"}
 context = {
     "name": "Gabriel Jesus",
@@ -52,23 +65,30 @@ context = {
     "total_points": 42
 }
 
+# Build the prompt
 prompt = format_prompt(event, context)
 
-# Tokenizza il prompt
+# Tokenize the input prompt
 inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
-# Genera output
+# Generate model output
 outputs = model.generate(
     inputs["input_ids"],
     attention_mask=inputs["attention_mask"],
-    max_new_tokens=150,  # attenzione a non esagerare, max tokens modello
+    max_new_tokens=150,
     do_sample=True,
     top_p=0.9,
     temperature=0.8,
-    pad_token_id=tokenizer.eos_token_id,
     no_repeat_ngram_size=2,
+    pad_token_id=tokenizer.eos_token_id,
 )
 
-# Decodifica e stampa
+# Decode and print the generated commentary
 generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-print(generated_text)
+
+# Optional: Only print the part after "Commentary:"
+if "Commentary:" in generated_text:
+    print("\n🎙️ Commentary:")
+    print(generated_text.split("Commentary:")[1].strip())
+else:
+    print(generated_text)
