@@ -148,7 +148,7 @@ Generate ONE vivid commentary sentence for this goal event, using ONLY the info 
 
 
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
-new_event = {"minute": 45, "type": "yellow_card", "player": "Gabriel Jesus"}
+new_event = {"minute": 45, "type": "goal", "player": "Gabriel Jesus"}
 new_context = {
     "name": "Gabriel Jesus",
     "position": "STRIKER",
