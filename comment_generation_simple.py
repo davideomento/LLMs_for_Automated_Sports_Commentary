@@ -147,6 +147,10 @@ STRICT RULES (REPEATED):
 - Do NOT invent or calculate any new statistics, ratios, or facts.  
 - Use only the exact raw data provided.  
 - Do NOT add any numeric conversions, averages, or extra commentary.  
+- Use all names exactly as provided without modification.
+- Mention the exact event minute and current score as given.
+
+
 
 
 INPUT:
@@ -168,8 +172,8 @@ new_event = {"minute": 36, "type": "goal", "player": "Gabriel Jesus"}
 new_context = {
     "name": "Gabriel Jesus",
     "position": "STRIKER",
-    "goals": 6,
-    "assists": 7,
+    "goals": 10,
+    "assists": 12,
     "minutes_played": 1100,
     "yellow_cards": 2,
     "red_cards": 0
