@@ -23,9 +23,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Prompt formatting function with match info and score
 
-def build_prompt_goals(home_team, away_team, current_score, lineup, event, context):
+def build_prompt(home_team, away_team, current_score, event, context):
     player = context["name"]
     minute = event["minute"]
+    event_type = event.get("type", "").lower()
 
     stats_parts = []
 
@@ -48,9 +49,9 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     stats_parts.append(f"Red Cards: {red_cards}")
 
     stats_block = "\n".join(stats_parts)
-
-
-    prompt = f"""TASK:
+    # GOAL
+    if event_type == "goal":
+        prompt = f"""TASK:
 You are a live football commentator. Generate a lively, natural-sounding commentary sentence using only the provided data.
 ---
 STRICT RULES:
@@ -162,8 +163,48 @@ Scorer: {player}
 {stats_block}
 
 OUTPUT:"""
+        
+
+    # YELLOW CARD
+    elif event_type == "yellow_card":
+        prompt = f"""TASK:
+You are a live football commentator. Generate a lively, natural-sounding commentary sentence using only the provided data.
+---
+STRICT RULES:
+- Use ONLY the exact data provided below.
+- Do NOT invent or add any context.
+- Mention the exact event minute and current score as given.
+- Use all names exactly as provided without modification.
+- Your sentence must be a single, extended commentary sentence.
+- Use only the provided current season statistics.
+---
+
+INPUT:
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Player: {player}
+{player} Stats This Season:
+{stats_block}
+
+OUTPUT:"""
+    else:
+        # Default fallback prompt (can be extended for other event types)
+        prompt = f"""TASK:
+You are a live football commentator. Generate a lively commentary sentence using only the provided data.
+---
+INPUT:
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Player: {player}
+{player} Stats This Season:
+{stats_block}
+
+OUTPUT:"""
 
     return prompt.strip()
+
 
 
 
@@ -215,3 +256,6 @@ else:
 
 print("\n🎙️ Commentary for new event:")
 print(commentary)
+
+
+
