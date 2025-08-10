@@ -53,7 +53,16 @@ def build_prompt(home_team, away_team, current_score, event, context):
     if event_type == "goal":
         prompt = f"""TASK:
 You are a live football commentator. Generate a lively, natural-sounding commentary sentence using only the provided data.
-Here are shown examples of input and of the output you should generate.
+---
+STRICT RULES:
+- Use ONLY the exact data provided below.
+- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
+- If a statistic is missing, do NOT mention it.
+- Mention the exact event minute and current score as given.
+- Use all names exactly as provided without modification.
+- Your sentence must be a single, extended commentary sentence.
+- Any additional detail must come ONLY from the provided current season statistics.
+- Excitement should come from expressive wording, not fabricated match events.
 ---
 
 EXAMPLE 1(anonymous):
@@ -141,9 +150,7 @@ STRICT RULES:
 - If a statistic is missing, do NOT mention it.
 - Mention the exact event minute and current score as given.
 - Use all names exactly as provided without modification.
-- Your sentence must be a single, extended commentary sentence.
-- Any additional detail must come ONLY from the provided current season statistics.
-- Excitement should come from expressive wording, not fabricated match events.
+
 
 
 
@@ -155,7 +162,7 @@ Scorer: {player}
 {player} Stats This Season:
 {stats_block}
 
-OUTPUT:  """
+OUTPUT:"""
         
 
     # YELLOW CARD
