@@ -69,9 +69,7 @@ Red Cards: *red_cards*
 
 "GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads *current_score*."
 
-"*player* finishes brilliantly at *minute*! The buildup was superb, and he delivers the decisive touch. That’s his *goals* goal this season. The score is now *current_score*, what a moment for *home_team*!"
-
----
+*player* finishes brilliantly at *minute* after a superb buildup, delivering the decisive touch. Having scored *goals* goals and provided *assists* assists last season, he’s proving to be a key player once again. The score is now *current_score* — what a moment for *home_team*---
 
 Now, generate an exciting and vivid commentary for this goal event using ONLY the information provided below:
 
@@ -106,10 +104,10 @@ example_commentary = (
 )
 
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
-new_event = {"minute": 45, "type": "yellow_card", "player": "Romelu Lukaku"}
+new_event = {"minute": 45, "type": "yellow_card", "player": "Gabriel Jesus"}
 new_context = {
     "name": "Romelu Lukaku",
-    "position": "MID",
+    "position": "STRIKER",
     "goals": 5,
     "assists": 7,
     "minutes_played": 1100,
