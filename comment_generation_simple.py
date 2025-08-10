@@ -45,6 +45,8 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     TASK: You are a live football commentator. 
     Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
 
+    --- 
+
     RULES:
     - Use ONLY the exact data provided below.
     - Do NOT invent, guess, or approximate any information.
@@ -56,7 +58,9 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     - Include relevant last season statistics naturally to enrich the commentary.
     - Do NOT add or invent any other information.
 
-    EXAMPLES:
+    ---
+
+    EXAMPLE:
 
     INPUT:
     
@@ -75,13 +79,11 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
 
     OUTPUT:
 
-    "Minute EVENT_MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
-
-    "GOAL at EVENT_MINUTE! SCORER makes no mistake, slotting it past the keeper! After LAST_SEASON_GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
-
     "SCORER finishes brilliantly at EVENT_MINUTE after a superb buildup, delivering the decisive touch. Having scored LAST_SEASON_GOALS goals and provided LAST_SEASON_ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
 
     ---
+
+    FINAL EXAMPLE (REAL DATA)
 
     INPUT:
 
@@ -105,8 +107,8 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
 
     ---
 
-    Now generate a single, vivid commentary sentence for the following event and given the following input:
-
+    --- NOW GENERATE FROM THE FOLLOWING DATA ---
+    
     INPUT:
     Match: {home_team} vs {away_team}  
     Current Score: {current_score}  
