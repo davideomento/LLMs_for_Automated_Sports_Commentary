@@ -66,7 +66,7 @@ Yellow Cards: {context.get("yellow_cards", 0)}
 Red Cards: {context.get("red_cards", 0)}
 
 --- EXAMPLE FORMAT ---
-"{player} surges down the right wing and whips in a cross! With {context.get("goals", 0)} and {context.get("assists", 0)} last season, he's always a danger man in these situations."
+"*PLAYER* surges down the right wing and whips in a cross! With {context.get("goals", 0)} and {context.get("assists", 0)} last season, he's always a danger man in these situations."
 "{player} doas a bad tackle and receives a yellow card! Last season, he had {context.get("yellow_cards", 0)} yellow cards and {context.get("red_cards", 0)} red cards, he's known for having good discipline on the pitch."
 
 --- COMMENTARY ---

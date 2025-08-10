@@ -35,7 +35,7 @@ def collect_match_context():
             }
         }
     }
-
+# Rememner to add attempted shots, blocked by, saved by, and other relevant stats to the context as needed.
 def collect_match_event():
     print("\n=== Log New Match Event ===")
     minute = input("Minute of event: ")
