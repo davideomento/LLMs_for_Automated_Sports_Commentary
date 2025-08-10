@@ -36,15 +36,17 @@ RULES:
 - Mention the event minute, player name, and updated current score clearly.
 - Use only the provided information. No guessing or extra details.
 - Include last season stats ONLY if non-zero.
-- Do NOT mention nationality, history, or player backstory.
+- Use all names, including those in the lineup, EXACTLY as provided. Do NOT change, shorten, or reformat any names.
+- DO NOT fabricate or approximate numbers.
+
 
 --- EXAMPLES (with placeholders) ---
 
-"Minute *minute* — What a fantastic strike from *player*! He brings the score to *current_score*. The crowd erupts as *home_team* take the lead!"
+"Minute MINUTE — What a fantastic strike from PLAYER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
 
-"GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads *current_score*."
+"GOAL at MINUTE! PLAYER makes no mistake, slotting it past the keeper! With GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
 
-"*player* finishes brilliantly at *minute* after a superb buildup, delivering the decisive touch. Having scored *goals* goals and provided *assists* assists last season, he’s proving to be a key player once again. The score is now *current_score* — what a moment for *home_team*!
+"PLAYER finishes brilliantly at MINUTE after a superb buildup, delivering the decisive touch. Having scored GOALS goals and provided ASSISTS assists last season, he’s proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
 
 --- NOW USE THE DATA BELOW TO GENERATE COMMENTARY ---
 
