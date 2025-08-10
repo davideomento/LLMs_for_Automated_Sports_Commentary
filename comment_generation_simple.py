@@ -91,6 +91,13 @@ OUTPUT:
 ---
 
 === NOW GENERATE ===
+
+STRICT RULES (REPEATED):  
+- Do NOT invent or calculate any new statistics, ratios, or facts.  
+- Use only the exact raw data provided.  
+- Do NOT add any numeric conversions, averages, or extra commentary.  
+
+
 INPUT:
 Match: {home_team} vs {away_team}
 Current Score: {current_score}
