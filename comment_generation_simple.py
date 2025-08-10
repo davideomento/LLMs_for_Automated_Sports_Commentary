@@ -106,13 +106,13 @@ example_commentary = (
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
 new_event = {"minute": 45, "type": "yellow_card", "player": "Gabriel Jesus"}
 new_context = {
-    "name": "Romelu Lukaku",
+    "name": "Gabriel Jesus",
     "position": "STRIKER",
     "goals": 5,
     "assists": 7,
     "minutes_played": 1100,
     "yellow_cards": 2,
-    "red_cards": 0
+    "red_cards": 05
 }
 
 prompt = build_prompt_goals(
