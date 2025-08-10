@@ -131,7 +131,7 @@ new_event = {"minute": 36, "type": "goal", "player": "Gabriel Jesus"}
 new_context = {
     "name": "Gabriel Jesus",
     "position": "STRIKER",
-    "goals": 5,
+    "goals": 60,
     "assists": 7,
     "minutes_played": 1100,
     "yellow_cards": 2,
