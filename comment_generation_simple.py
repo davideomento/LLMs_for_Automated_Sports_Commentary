@@ -20,7 +20,7 @@ drive_model_path = "/content/drive/MyDrive/mistral_model"
 tokenizer = AutoTokenizer.from_pretrained(drive_model_path)
 model = AutoModelForCausalLM.from_pretrained(
     drive_model_path,
-    device_map="auto",
+    device_map="None",
     torch_dtype=torch.float16
 )
 
