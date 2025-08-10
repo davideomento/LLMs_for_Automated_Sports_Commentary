@@ -225,10 +225,6 @@ prompt = build_prompt(
     home_team="Arsenal",
     away_team="Manchester City",
     current_score="1-0",
-    lineup=(
-        "Arsenal: Ramsdale, White, Saliba, Gabriel, Zinchenko, Rice, Ødegaard, Havertz, Saka, Martinelli, Gabriel Jesus\n"
-        "Manchester City: Ederson, Walker, Aké, Dias, Gvardiol, Rodri, Bernardo, De Bruyne, Foden, Doku, Haaland"
-    ),
     event=new_event,
     context=new_context,)
 
