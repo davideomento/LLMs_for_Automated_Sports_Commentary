@@ -30,7 +30,7 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     prompt = f"""
 You are a live football commentator.
 
-Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
+Generate ONE EXCITING and VIVID real-time commentary describing a GOAL scored in a football match.
 
 RULES:
 - USE ONLY THE EXACT DATA PROVIDED BELOW.
