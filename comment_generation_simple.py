@@ -78,7 +78,7 @@ Red Cards: {context.get("red_cards", 0)}
 EXAMPLE COMMENTARY:
 "Minute {minute} — {player} scores for Arsenal! The ball is dispatched past Edersons outstretched hands. With {context.get("goals", 0)} goals in {context.get("assists", 0)} games last season, {player} is already making his mark. Arsenals now lead {current_score} and the crowd is going wild.
 
-COOMENTARY: 
+COMMENTARY:
 """
     return prompt.strip()
 
