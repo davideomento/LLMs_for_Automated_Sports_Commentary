@@ -22,7 +22,53 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Prompt formatting function with match info and score
+
 def build_prompt_goals(home_team, away_team, current_score, lineup, event, context):
+    player = context["name"]
+    minute = event["minute"]
+
+    prompt = f"""
+You are a live football commentator.
+
+Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
+
+RULES:
+- Mention the event minute, player name, and updated current score clearly.
+- Use only the provided information. No guessing or extra details.
+- Include last season stats ONLY if non-zero.
+- Do NOT mention nationality, history, or player backstory.
+
+--- EXAMPLES (with placeholders) ---
+
+"Minute *minute* — What a fantastic strike from *player*! He brings the score to *current_score*. The crowd erupts as *home_team* take the lead!"
+
+"GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads *current_score*."
+
+"*player* finishes brilliantly at *minute* after a superb buildup, delivering the decisive touch. Having scored *goals* goals and provided *assists* assists last season, he’s proving to be a key player once again. The score is now *current_score* — what a moment for *home_team*!
+
+--- NOW USE THE DATA BELOW TO GENERATE COMMENTARY ---
+
+Match: {home_team} vs {away_team}  
+Current Score: {current_score}  
+Starting Lineup:  
+{lineup}
+
+Event Minute: {minute}  
+Scorer: {player}
+
+{player} Stats Last Season:  
+Position: {context.get("position", "N/A")}  
+Goals: {context.get("goals", 0)}  
+Assists: {context.get("assists", 0)}  
+Minutes Played: {context.get("minutes_played", 0)}  
+Yellow Cards: {context.get("yellow_cards", 0)}  
+Red Cards: {context.get("red_cards", 0)}
+
+--- COMMENTARY ---
+"""
+    return prompt.strip()
+
+'''def build_prompt_goals(home_team, away_team, current_score, lineup, event, context):
     player = context["name"]
     minute = event["minute"]
 
@@ -65,13 +111,13 @@ Red Cards: *red_cards*
 
 --- EXAMPLE COMMENTARY ---
 
-"Minute *minute* — What a fantastic strike from *player*! He finds the back of the net with clinical precision, bringing the score to *current_score*. The crowd erupts as *home_team* take the lead!"
+"Minute *minute* — What a fantastic strike from *player*! He brings the score to *current_score*. The crowd erupts as *home_team* take the lead!"
 
-"GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads *current_score*."
+"GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving to be a key attacking threat. The scoreboard now reads *current_score*."
 
-*player* finishes brilliantly at *minute* after a superb buildup, delivering the decisive touch. Having scored *goals* goals and provided *assists* assists last season, he’s proving to be a key player once again. The score is now *current_score* — what a moment for *home_team*---
+"*player* finishes brilliantly at *minute* after a superb buildup, delivering the decisive touch. Having scored *goals* goals and provided *assists* assists last season, he’s proving to be a key player once again. The score is now *current_score* — what a moment for *home_team*!"
 
-Now, generate an exciting and vivid commentary for this goal event using ONLY the information provided below:
+--- NOW USE THE REAL DATA BELOW TO GENERATE COMMENTARY ---
 
 --- MATCH INFO ---
 Match: {home_team} vs {away_team}
@@ -91,17 +137,13 @@ Minutes Played: {context.get("minutes_played", 0)}
 Yellow Cards: {context.get("yellow_cards", 0)}  
 Red Cards: {context.get("red_cards", 0)}
 
+Generate ONE vivid commentary sentence for this goal event, using ONLY the info below.
+
 --- COMMENTARY ---
 """
 
-    return prompt.strip()
+    return prompt.strip()'''
 
-# Primo evento (esempio fisso)
-example_commentary = (
-    "32' – It's Gabriel Jesus with the breakthrough! The Brazilian striker finds a pocket of space inside the box and lashes it past Ederson! "
-    "That’s his third goal of the season, and what a moment to get it against his former club! With 600 minutes played and 2 assists last season, "
-    "he's proving his worth up front again. Arsenal takes the lead, 1–0!"
-)
 
 # Nuovo evento (per testare il modello senza fornire un nuovo esempio)
 new_event = {"minute": 45, "type": "yellow_card", "player": "Gabriel Jesus"}
