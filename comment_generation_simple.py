@@ -41,6 +41,9 @@ RULES:
 - Use all names exactly as provided without modification.
 - Your sentence should be a single, extended commentary sentence.
 - Include relevant last season statistics naturally to enrich the commentary.
+- Generate ONE sentence only, using exactly these placeholders: EVENT_MINUTE, SCORER, CURRENT_SCORE, LAST_SEASON_GOALS, LAST_SEASON_ASSISTS.  
+- Do NOT add or invent any other information.
+
 
 EXAMPLES:
 
