@@ -33,20 +33,22 @@ You are a live football commentator.
 Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
 
 RULES:
-- Mention the event minute, player name, and updated current score clearly.
-- Use only the provided information. No guessing or extra details.
-- Include last season stats ONLY if non-zero.
-- Use all names, including those in the lineup, EXACTLY as provided. Do NOT change, shorten, or reformat any names.
-- DO NOT fabricate or approximate numbers.
+- USE ONLY THE EXACT DATA PROVIDED BELOW.
+- DO NOT INVENT, GUESS, OR APPROXIMATE ANY INFORMATION.
+- DO NOT MENTION STATISTICS OR DETAILS NOT PROVIDED.
+- IF A STAT IS ZERO OR MISSING, DO NOT MENTION IT.
+- MENTION THE EXACT EVENT MINUTE AND CURRENT SCORE AS GIVEN.
+- USE ALL NAMES EXACTLY AS PROVIDED WITHOUT ANY MODIFICATION.
+
 
 
 --- EXAMPLES (with placeholders) ---
 
-"Minute MINUTE — What a fantastic strike from PLAYER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
+"Minute EVENT MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT SCORE. The crowd erupts as HOME TEAM take the lead!"
 
-"GOAL at MINUTE! PLAYER makes no mistake, slotting it past the keeper! With GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
+"GOAL at EVENT MINUTE! SCORER makes no mistake, slotting it past the keeper! With LAST SEASON GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT SCORE."
 
-"PLAYER finishes brilliantly at MINUTE after a superb buildup, delivering the decisive touch. Having scored GOALS goals and provided ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
+"SCORER finishes brilliantly at EVENT MINUTE after a superb buildup, delivering the decisive touch. Having scored LAST SEASON GOALS goals and provided LAST SEASON ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT SCORE — what a moment for HOME TEAM!"
 
 --- NOW USE THE DATA BELOW TO GENERATE COMMENTARY ---
 
