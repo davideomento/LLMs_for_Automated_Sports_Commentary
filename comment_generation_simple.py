@@ -46,7 +46,7 @@ RULES:
 
 "GOAL at MINUTE! PLAYER makes no mistake, slotting it past the keeper! With GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
 
-"PLAYER finishes brilliantly at MINUTE after a superb buildup, delivering the decisive touch. Having scored GOALS goals and provided ASSISTS assists last season, he’s proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
+"PLAYER finishes brilliantly at MINUTE after a superb buildup, delivering the decisive touch. Having scored GOALS goals and provided ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
 
 --- NOW USE THE DATA BELOW TO GENERATE COMMENTARY ---
 
