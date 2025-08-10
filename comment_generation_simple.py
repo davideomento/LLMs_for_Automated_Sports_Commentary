@@ -62,7 +62,6 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     
     Match: HOME_TEAM vs AWAY_TEAM 
     Current Score: CURRENT_SCORE
-    Starting Lineup: LINEUP
     Event Minute: EVENT_MINUTE
     Scorer: SCORER
 
@@ -75,6 +74,7 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     Red Cards: RED_CARDS
 
     OUTPUT:
+
     "Minute EVENT_MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
 
     "GOAL at EVENT_MINUTE! SCORER makes no mistake, slotting it past the keeper! After LAST_SEASON_GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
@@ -84,6 +84,7 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     ---
 
     INPUT:
+
     Match: Chelsea vs Manchester United 
     Current Score: 2-1
     Event Minute: 45
@@ -99,14 +100,16 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
 
 
     OUTPUT:
+
     "Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists last season, he's proving his worth. Chelsea now lead 2-1."
 
     ---
 
+    Now generate a single, vivid commentary sentence for the following event and given the following input:
+
     INPUT:
     Match: {home_team} vs {away_team}  
     Current Score: {current_score}  
-    Starting Lineup:  {lineup}
 
     Event Minute: {minute}  
     Scorer: {player}
