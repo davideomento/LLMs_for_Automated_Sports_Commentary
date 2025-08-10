@@ -144,13 +144,12 @@ OUTPUT:
 
 === NOW GENERATE ===
 
-STRICT RULES (REPEATED):  
+STRICT RULES:  
 - Do NOT invent or calculate any new statistics, ratios, or facts.  
 - Use only the exact raw data provided.  
 - Do NOT add any numeric conversions, averages, or extra commentary.  
 - Use all names exactly as provided without modification.
 - Mention the exact event minute and current score as given.
-
 
 
 
@@ -172,11 +171,13 @@ You are a live football commentator. Generate a lively, natural-sounding comment
 ---
 STRICT RULES:
 - Use ONLY the exact data provided below.
-- Do NOT invent or add any context.
+- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
+- If a statistic is missing, do NOT mention it.
 - Mention the exact event minute and current score as given.
 - Use all names exactly as provided without modification.
 - Your sentence must be a single, extended commentary sentence.
-- Use only the provided current season statistics.
+- Any additional detail must come ONLY from the provided current season statistics.
+- Excitement should come from expressive wording, not fabricated match events.
 ---
 
 INPUT:
@@ -220,7 +221,7 @@ new_context = {
     "red_cards": 0
 }
 
-prompt = build_prompt_goals(
+prompt = build_prompt(
     home_team="Arsenal",
     away_team="Manchester City",
     current_score="1-0",
