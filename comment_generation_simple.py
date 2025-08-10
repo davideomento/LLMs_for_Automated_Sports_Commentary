@@ -22,29 +22,58 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Prompt formatting function with match info and score
-def build_prompt_with_example(home_team, away_team, current_score, lineup, event, context):
+def build_prompt_goals(home_team, away_team, current_score, lineup, event, context):
     player = context["name"]
     minute = event["minute"]
-    event_type = event["type"].capitalize()
 
     prompt = f"""
 You are a live football commentator.
 
-Your task is to generate **EXCITING, VIVID, REAL-TIME COMMENTARY** for the following single football event.  
+Your task is to generate **EXCITING, VIVID, REAL-TIME COMMENTARY** describing a GOAL scored in a football match.  
 ONLY use the information provided below — DO NOT guess or invent anything.
 
 RULES (follow strictly):
-- Use natural, energetic commentary style.
-- You MUST mention the event minute clearly in the commentary.
-- Only describe the event, not the whole match.
+- Use natural, energetic commentary style full of enthusiasm.
+- You MUST clearly mention the event minute, the player scoring the goal, and the updated current score.
+- Only describe the goal event itself, not the entire match.
 - DO NOT mention:
   - Player nationality
   - Club history
   - Player backstory
-  - Anything not given explicitly
+  - Anything not explicitly provided
 - Only include STATS from last season if they are non-zero.
 - DO NOT mention zero stats or make assumptions.
-- Always use the player's and team's name as given in the context.
+- Always use the player's and team's name exactly as given in the context.
+
+--- MATCH INFO ---
+Match: *home_team* vs *away_team*
+Current Score: *current_score*  
+Starting Lineup:  
+*lineup*
+
+--- EVENT INFO ---
+Minute: *minute*  
+Player: *player*
+
+--- *player* STATS LAST SEASON ---
+Position: *position*  
+Goals: *goals*  
+Assists: *assists*  
+Minutes Played: *minutes_played*  
+Yellow Cards: *yellow_cards*  
+Red Cards: *red_cards*
+
+--- EXAMPLE COMMENTARY ---
+
+"Minute *minute* — What a fantastic strike from *player*! He finds the back of the net with clinical precision, bringing the score to *current_score*. The crowd erupts as *home_team* take the lead!"
+
+"GOAL at *minute*! *player* makes no mistake, slotting it past the keeper! With *goals* goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads *current_score*."
+
+"*player* finishes brilliantly at *minute*! The buildup was superb, and he delivers the decisive touch. That’s his *goals* goal this season. The score is now *current_score*, what a moment for *home_team*!"
+
+---
+
+Now, generate an exciting and vivid commentary for this goal event using ONLY the information provided below:
 
 --- MATCH INFO ---
 Match: {home_team} vs {away_team}
@@ -54,7 +83,6 @@ Starting Lineup:
 
 --- EVENT INFO ---
 Minute: {minute}  
-Event Type: {event_type}  
 Player: {player}
 
 --- {player} STATS LAST SEASON ---
@@ -65,12 +93,7 @@ Minutes Played: {context.get("minutes_played", 0)}
 Yellow Cards: {context.get("yellow_cards", 0)}  
 Red Cards: {context.get("red_cards", 0)}
 
---- EXAMPLE FORMAT ---
-"*PLAYER* surges down the right wing and whips in a cross! With {context.get("goals", 0)} and {context.get("assists", 0)} last season, he's always a danger man in these situations."
-"{player} doas a bad tackle and receives a yellow card! Last season, he had {context.get("yellow_cards", 0)} yellow cards and {context.get("red_cards", 0)} red cards, he's known for having good discipline on the pitch."
-
 --- COMMENTARY ---
-Minute {minute}:
 """
 
     return prompt.strip()
@@ -94,7 +117,7 @@ new_context = {
     "red_cards": 0
 }
 
-prompt = build_prompt_with_example(
+prompt = build_prompt_goals(
     home_team="Arsenal",
     away_team="Manchester City",
     current_score="1-0",
