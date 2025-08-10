@@ -112,7 +112,7 @@ new_context = {
     "assists": 7,
     "minutes_played": 1100,
     "yellow_cards": 2,
-    "red_cards": 05
+    "red_cards": 0
 }
 
 prompt = build_prompt_goals(
