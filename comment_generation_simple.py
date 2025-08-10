@@ -27,7 +27,7 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     player = context["name"]
     minute = event["minute"]
 
-    # Prepara blocco statistiche filtrando i valori vuoti o 0
+    # Filtra statistiche (no zeri o nulli)
     stats_parts = []
     if context.get("position"):
         stats_parts.append(f"Position: {context['position']}")
@@ -47,19 +47,18 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
 You are a live football commentator. 
 Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
 ---
-RULES:
+STRICT RULES:
 - Use ONLY the exact data provided below.
-- Do NOT invent, guess, or approximate any information.
-- Do NOT mention statistics or details not provided.
-- If a stat is zero or missing, do NOT mention it.
+- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
+- If a statistic is zero or missing, do NOT mention it.
 - Mention the exact event minute and current score as given.
 - Use all names exactly as provided without modification.
-- Your sentence should be a single, extended commentary sentence.
-- Include relevant last season statistics naturally to enrich the commentary.
-- Do NOT add or invent any other information.
+- Your sentence must be a single, extended commentary sentence.
+- Any additional detail must come ONLY from the provided last season statistics.
+- Excitement should come from expressive wording, not fabricated match events.
 ---
 
-EXAMPLE 1 (ANONYMIZED):
+EXAMPLE 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
 Current Score: CURRENT_SCORE
@@ -67,35 +66,14 @@ Event Minute: EVENT_MINUTE
 Scorer: SCORER
 SCORER Stats Last Season:
 Position: POSITION
-Goals: GOALS
-Assists: ASSISTS
-Minutes Played: MINUTES_PLAYED
-Yellow Cards: YELLOW_CARDS
-Red Cards: RED_CARDS
+Goals: 12
+Assists: 5
 
 OUTPUT:
-"Minute EVENT_MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
+"GOAL at EVENT_MINUTE! SCORER finds the net again — with 12 goals and 5 assists last season, he’s showing why he’s a key man for HOME_TEAM. The score is now CURRENT_SCORE."
 ---
 
-EXAMPLE 2 (ANONYMIZED):
-INPUT:
-Match: HOME_TEAM vs AWAY_TEAM
-Current Score: CURRENT_SCORE
-Event Minute: EVENT_MINUTE
-Scorer: SCORER
-SCORER Stats Last Season:
-Position: POSITION
-Goals: GOALS
-Assists: ASSISTS
-Minutes Played: MINUTES_PLAYED
-Yellow Cards: YELLOW_CARDS
-Red Cards: RED_CARDS
-
-OUTPUT:
-"GOAL at EVENT_MINUTE! SCORER makes no mistake, slotting it past the keeper! After LAST_SEASON_GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
----
-
-FINAL EXAMPLE (REAL DATA):
+EXAMPLE 2:
 INPUT:
 Match: Chelsea vs Manchester United
 Current Score: 2-1
@@ -123,7 +101,8 @@ Scorer: {player}
 
 OUTPUT:"""
 
-    return prompt.strip()
+    return prompt
+
 
 
 
