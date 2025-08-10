@@ -27,20 +27,6 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     player = context["name"]
     minute = event["minute"]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     prompt = f"""
     TASK: You are a live football commentator. 
     Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
@@ -108,7 +94,7 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     ---
 
     --- NOW GENERATE FROM THE FOLLOWING DATA ---
-    
+
     INPUT:
     Match: {home_team} vs {away_team}  
     Current Score: {current_score}  
