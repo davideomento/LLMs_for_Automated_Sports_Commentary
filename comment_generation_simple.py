@@ -142,17 +142,15 @@ OUTPUT:
 "Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists this season, he's proving his worth. Chelsea now lead 2-1."
 ---
 
-=== NOW GENERATE ===
-
 STRICT RULES:
 - Use ONLY the exact data provided below.
 - Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
 - If a statistic is missing, do NOT mention it.
 - Mention the exact event minute and current score as given.
 - Use all names exactly as provided without modification.
+---
 
-
-
+=== NOW GENERATE USING THE FOLLOWING DATA ===
 
 INPUT:
 Match: {home_team} vs {away_team}
