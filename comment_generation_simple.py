@@ -120,80 +120,11 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     Red Cards: {context.get("red_cards", 0)}
 
     OUTPUT:"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    prompt = f"""
-You are a live football commentator.
-
-Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
-
-RULES:
-- Use ONLY the exact data provided below.
-- Do NOT invent, guess, or approximate any information.
-- Do NOT mention statistics or details not provided.
-- If a stat is zero or missing, do NOT mention it.
-- Mention the exact event minute and current score as given.
-- Use all names exactly as provided without modification.
-- Your sentence should be a single, extended commentary sentence.
-- Include relevant last season statistics naturally to enrich the commentary.
-- Generate ONE sentence only, using exactly these placeholders: EVENT_MINUTE, SCORER, CURRENT_SCORE, LAST_SEASON_GOALS, LAST_SEASON_ASSISTS.  
-- Do NOT add or invent any other information.
-
-
-EXAMPLES:
-
-"Minute EVENT_MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
-
-"GOAL at EVENT_MINUTE! SCORER makes no mistake, slotting it past the keeper! With LAST_SEASON_GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
-
-"SCORER finishes brilliantly at EVENT_MINUTE after a superb buildup, delivering the decisive touch. Having scored LAST_SEASON_GOALS goals and provided LAST_SEASON_ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
-
----
-
-Use the data below to generate commentary:
-
-Match: {home_team} vs {away_team}  
-Current Score: {current_score}  
-Starting Lineup:  
-{lineup}
-
-Event Minute: {minute}  
-Scorer: {player}
-
-{player} Stats Last Season:  
-Position: {context.get("position", "N/A")}  
-Goals: {context.get("goals", 0)}  
-Assists: {context.get("assists", 0)}  
-Minutes Played: {context.get("minutes_played", 0)}  
-Yellow Cards: {context.get("yellow_cards", 0)}  
-Red Cards: {context.get("red_cards", 0)}
-
----
-
-EXAMPLE COMMENTARY:
-"Minute {minute} — {player} scores for Arsenal! The ball is dispatched past Edersons outstretched hands. With {context.get("goals", 0)} goals in {context.get("assists", 0)} games last season, {player} is already making his mark. Arsenals now lead {current_score} and the crowd is going wild.
-
-COMMENTARY:
-"""
     return prompt.strip()
 
 
 
-new_event = {"minute": 45, "type": "goal", "player": "Gabriel Jesus"}
+new_event = {"minute": 36, "type": "goal", "player": "Gabriel Jesus"}
 new_context = {
     "name": "Gabriel Jesus",
     "position": "STRIKER",
