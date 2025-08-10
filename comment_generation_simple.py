@@ -27,90 +27,102 @@ def build_prompt_goals(home_team, away_team, current_score, lineup, event, conte
     player = context["name"]
     minute = event["minute"]
 
-    prompt = f"""
-    TASK: You are a live football commentator. 
-    Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
+    # Prepara blocco statistiche filtrando i valori vuoti o 0
+    stats_parts = []
+    if context.get("position"):
+        stats_parts.append(f"Position: {context['position']}")
+    if context.get("goals", 0) > 0:
+        stats_parts.append(f"Goals: {context['goals']}")
+    if context.get("assists", 0) > 0:
+        stats_parts.append(f"Assists: {context['assists']}")
+    if context.get("minutes_played", 0) > 0:
+        stats_parts.append(f"Minutes Played: {context['minutes_played']}")
+    if context.get("yellow_cards", 0) > 0:
+        stats_parts.append(f"Yellow Cards: {context['yellow_cards']}")
+    if context.get("red_cards", 0) > 0:
+        stats_parts.append(f"Red Cards: {context['red_cards']}")
+    stats_block = "\n".join(stats_parts)
 
-    --- 
+    prompt = f"""TASK:
+You are a live football commentator. 
+Generate ONE EXCITING and VIVID real-time commentary sentence describing a GOAL scored in a football match.
+---
+RULES:
+- Use ONLY the exact data provided below.
+- Do NOT invent, guess, or approximate any information.
+- Do NOT mention statistics or details not provided.
+- If a stat is zero or missing, do NOT mention it.
+- Mention the exact event minute and current score as given.
+- Use all names exactly as provided without modification.
+- Your sentence should be a single, extended commentary sentence.
+- Include relevant last season statistics naturally to enrich the commentary.
+- Do NOT add or invent any other information.
+---
 
-    RULES:
-    - Use ONLY the exact data provided below.
-    - Do NOT invent, guess, or approximate any information.
-    - Do NOT mention statistics or details not provided.
-    - If a stat is zero or missing, do NOT mention it.
-    - Mention the exact event minute and current score as given.
-    - Use all names exactly as provided without modification.
-    - Your sentence should be a single, extended commentary sentence.
-    - Include relevant last season statistics naturally to enrich the commentary.
-    - Do NOT add or invent any other information.
+EXAMPLE 1 (ANONYMIZED):
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Scorer: SCORER
+SCORER Stats Last Season:
+Position: POSITION
+Goals: GOALS
+Assists: ASSISTS
+Minutes Played: MINUTES_PLAYED
+Yellow Cards: YELLOW_CARDS
+Red Cards: RED_CARDS
 
-    ---
+OUTPUT:
+"Minute EVENT_MINUTE — What a fantastic strike from SCORER! He brings the score to CURRENT_SCORE. The crowd erupts as HOME_TEAM take the lead!"
+---
 
-    EXAMPLE:
+EXAMPLE 2 (ANONYMIZED):
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Scorer: SCORER
+SCORER Stats Last Season:
+Position: POSITION
+Goals: GOALS
+Assists: ASSISTS
+Minutes Played: MINUTES_PLAYED
+Yellow Cards: YELLOW_CARDS
+Red Cards: RED_CARDS
 
-    INPUT:
-    
-    Match: HOME_TEAM vs AWAY_TEAM 
-    Current Score: CURRENT_SCORE
-    Event Minute: EVENT_MINUTE
-    Scorer: SCORER
+OUTPUT:
+"GOAL at EVENT_MINUTE! SCORER makes no mistake, slotting it past the keeper! After LAST_SEASON_GOALS goals last season, he’s proving once again to be a key attacking threat. The scoreboard now reads CURRENT_SCORE."
+---
 
-    SCORER Stats Last Season:  
-    Position: POSITION  
-    Goals: GOALS
-    Assists: ASSISTS 
-    Minutes Played: MINUTES_PLAYED
-    Yellow Cards: YELLOW_CARDS 
-    Red Cards: RED_CARDS
+FINAL EXAMPLE (REAL DATA):
+INPUT:
+Match: Chelsea vs Manchester United
+Current Score: 2-1
+Event Minute: 45
+Scorer: Cole Palmer
+SCORER Stats Last Season:
+Position: MIDFIELDER
+Goals: 10
+Assists: 15
+Minutes Played: 1648
+Yellow Cards: 4
 
-    OUTPUT:
+OUTPUT:
+"Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists last season, he's proving his worth. Chelsea now lead 2-1."
+---
 
-    "SCORER finishes brilliantly at EVENT_MINUTE after a superb buildup, delivering the decisive touch. Having scored LAST_SEASON_GOALS goals and provided LAST_SEASON_ASSISTS assists last season, he is proving to be a key player once again. The score is now CURRENT_SCORE — what a moment for HOME_TEAM!"
+=== NOW GENERATE ===
+INPUT:
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Scorer: {player}
+{player} Stats Last Season:
+{stats_block}
 
-    ---
+OUTPUT:"""
 
-    FINAL EXAMPLE (REAL DATA)
-
-    INPUT:
-
-    Match: Chelsea vs Manchester United 
-    Current Score: 2-1
-    Event Minute: 45
-    Scorer: Cole Palmer
-
-    SCORER Stats Last Season:  
-    Position: MIDFIELDER 
-    Goals: 10
-    Assists: 15 
-    Minutes Played: 1648
-    Yellow Cards: 4 
-    Red Cards: 0
-
-
-    OUTPUT:
-
-    "Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists last season, he's proving his worth. Chelsea now lead 2-1."
-
-    ---
-
-    --- NOW GENERATE FROM THE FOLLOWING DATA ---
-
-    INPUT:
-    Match: {home_team} vs {away_team}  
-    Current Score: {current_score}  
-
-    Event Minute: {minute}  
-    Scorer: {player}
-
-    {player} Stats Last Season:  
-    Position: {context.get("position", "N/A")}  
-    Goals: {context.get("goals", 0)}  
-    Assists: {context.get("assists", 0)}  
-    Minutes Played: {context.get("minutes_played", 0)}  
-    Yellow Cards: {context.get("yellow_cards", 0)}  
-    Red Cards: {context.get("red_cards", 0)}
-
-    OUTPUT:"""
     return prompt.strip()
 
 
