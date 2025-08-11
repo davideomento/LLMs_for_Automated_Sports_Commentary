@@ -21,40 +21,11 @@ model = AutoModelForCausalLM.from_pretrained(
 model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Prompt formatting function with match info and score
 
-def build_prompt(home_team, away_team, current_score, event, context):
-    player = context["name"]
-    minute = event["minute"]
-    event_type = event.get("type", "").lower()
-
-    stats_parts = []
-
-    position = context.get("position", "N/A")
-    stats_parts.append(f"Position: {position}")
-
-    goals = context.get("goals", 0)
-    stats_parts.append(f"Goals: {goals}")
-
-    assists = context.get("assists", 0)
-    stats_parts.append(f"Assists: {assists}")
-
-    minutes_played = context.get("minutes_played", 0)
-    stats_parts.append(f"Minutes Played: {minutes_played}")
-
-    yellow_cards = context.get("yellow_cards", 0)
-    stats_parts.append(f"Yellow Cards: {yellow_cards}")
-
-    red_cards = context.get("red_cards", 0)
-    stats_parts.append(f"Red Cards: {red_cards}")
-
-    stats_block = "\n".join(stats_parts)
-    # GOAL
-    if event_type == "goal":
-        prompt = f"""TASK:
+def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats):
+    return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
----
 
 STRICT RULES:
 - Use ONLY the exact data provided below.
@@ -63,184 +34,543 @@ STRICT RULES:
 - Mention the exact event minute and current score as given.
 - Use all names exactly as provided without modification.
 
-EXAMPLE 1(anonymous):
+EXAMPLE 1 :
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Scorer: SCORER
-SCORER Stats This Season:
-Position: POSITION
-Goals: GOALS
-Assists: ASSISTS
-Yellow Cards: YELLOW_CARDS
-Red Cards: RED_CARDS
+Assister: ASSISTER
+Goal Type: GOAL_TYPE
+Shot Position: SHOT_POSITION
+Scorer Goals this Season: GOALS
+Scorer Assists this Season: ASSISTS
 
 OUTPUT:
-"GOAL at EVENT_MINUTE! SCORER finds the net again — with 12 goals and 5 assists this season, he’s showing why he’s a key man for HOME_TEAM. The score is now CURRENT_SCORE."
+"GOAL at EVENT_MINUTE! SCORER finds the net from SHOT_POSITION — with GOALS goals and ASSISTS assists this season, 
+he's proving to be a key man for HOME_TEAM. The score is now CURRENT_SCORE. Credit goes to ASSISTER for the assist.
 ---
 
-EXAMPLE 2(anonymous):
+EXAMPLE 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Scorer: SCORER
-SCORER Stats This Season:
-Position: POSITION
-Goals: GOALS
-Assists: ASSISTS
-Yellow Cards: YELLOW_CARDS
-Red Cards: RED_CARDS
+Assister: ASSISTER
+Goal Type: GOAL_TYPE
+Shot Position: SHOT_POSITION
+Scorer Age: AGE
+Matches Played this Season: MATCHES_PLAYED
 
 OUTPUT:
-"Minute EVENT_MINUTE — SCORER strikes again! With GOALS goals and ASSISTS assists this season, they continue to be a key player for HOME_TEAM. The score is now CURRENT_SCORE.
----
-
-EXAMPLE 3(anonymous):
-INPUT:
-Match: HOME_TEAM vs AWAY_TEAM
-Current Score: CURRENT_SCORE
-Event Minute: EVENT_MINUTE
-Scorer: SCORER
-SCORER Stats This Season:
-Position: DEFENDER
-Goals: 0
-Assists: 3
-
-OUTPUT:
-"Minute EVENT_MINUTE — SCORER scores a rare goal! Despite scoring 0 goals and providing 3 assists this season, its contribution remains crucial. The score is now CURRENT_SCORE."
----
-
-EXAMPLE 4(real data):
-INPUT:
-Match: LIVERPOOL vs EVERTON
-Current Score: 3-2
-Event Minute: 78
-Scorer: Mohamed Salah
-SCORER Stats This Season:
-Position: FORWARD
-Goals: 22
-Assists: 8
-
-OUTPUT:
-"Minute 78 — Mohamed Salah strikes again! With 22 goals and 8 assists this season, he continues to be Liverpool’s attacking powerhouse. The score is now 3-2."
+"Minute EVENT_MINUTE — SCORER scores from SHOT_POSITION with a brilliant GOAL_TYPE finish! 
+At AGE years old and with MATCHES_PLAYED appearances this season, he's showing incredible form for HOME_TEAM. 
+The score is now CURRENT_SCORE, thanks to a precise assist from ASSISTER."
 
 ---
-
-=== NOW GENERATE USING THE FOLLOWING DATA ===
 
 INPUT:
 Match: {home_team} vs {away_team}
 Current Score: {current_score}
 Event Minute: {minute}
-Scorer: {player}
-{player} Stats This Season:
-{stats_block}
+Scorer: {scorer}
+Assist: {assist}
+Goal Type: {goal_type}
+Position of the shot: {shot_position}
+{scorer} Info: {player_info}
+{scorer} Stats: {player_stats}
 
 OUTPUT:"""
-        
 
-    # YELLOW CARD
-    elif event_type == "yellow_card":
-        prompt = f"""TASK
-Act as a live football commentator. Using only the provided match data, create a vivid, energetic, and natural-sounding single-sentence commentary describing the moment a player gets a yellow card.
+def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats):
+    return f"""TASK:
+Act as a live football commentator. Using only the provided match data, create a lively, accurate single-sentence commentary describing an attempted shot.
 
-STRICT RULES
-- Use only the exact data provided.
-- Do not invent, guess, or add any extra context.
-- If a statistic is missing, do not mention it.
-- Mention the exact event minute.
-- Use all names exactly as provided without modification.
+STRICT RULES:
+- Mention shooter, outcome, and position from which the shot was taken.
+- No invented details.
+- Mention exact event minute.
 
-Example 1
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Shooter: SHOOTER
+Outcome: OUTCOME
+Position of the shot: SHOT_POSITION
+SHOOTER Info: SHOOTER_INFO
+SHOOTER Stats: SHOOTER_STATS
+
+OUTPUT:
+"Minute EVENT_MINUTE — SHOOTER fires a shot from SHOT_POSITION, but it’s OUTCOME. Score remains CURRENT_SCORE."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Shooter: SHOOTER
+Outcome: OUTCOME
+Position of the shot: SHOT_POSITION
+SHOOTER Info: SHOOTER_INFO
+SHOOTER Stats: SHOOTER_STATS
+
+OUTPUT:
+"Minute EVENT_MINUTE — SHOOTER attempts a shot from SHOT_POSITION, but it goes OUTCOME. The score is still CURRENT_SCORE."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Shooter: {shooter}
+Outcome: {outcome}
+Position of the shot: {shot_position}
+{shooter} Info: {shooter_info}
+{shooter} Stats: {shooter_stats}
+
+OUTPUT:"""
+
+def prompt_dribbling(home_team, away_team, current_score, minute, player1, player2, player1_info, player1_stats, successful_dribbles):
+    return f"""TASK:
+Describe in one energetic sentence a dribbling action between two players.
+
+STRICT RULES:
+- State clearly who dribbled who.
+- Mention event minute.
+- No invented details.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Dribbler: DRIBBLER
+Defender: DEFENDER
+Successful Dribbles: SUCCESSFUL_DRIBBLES
+
+OUTPUT:
+"Minute EVENT_MINUTE — DRIBBLER skilfully dribbles past DEFENDER, adding to his SUCCESSFUL_DRIBBLES successful dribbles this season. The score is CURRENT_SCORE."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Dribbler: DRIBBLER
+Defender: DEFENDER
+
+OUTPUT:
+"At minute EVENT_MINUTE DRIBBLER elegantly dribbles past DEFENDER, keeping the pressure on at CURRENT_SCORE."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Dribbler: {player1}
+Defender: {player2}
+{player1} Info: {player1_info} (Successful Dribbles: {successful_dribbles})
+{player1} Stats: {player1_stats}
+
+OUTPUT:"""
+
+
+def prompt_tackle(home_team, away_team, current_score, minute, player1, player2):
+    return f"""TASK:
+Describe a football tackle in one sentence.
+
+STRICT RULES:
+- Mention tackler and opponent.
+- Mention event minute.
+- No invented context.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Tackler: TACKLER
+Opponent: OPPONENT
+
+OUTPUT:
+"Minute EVENT_MINUTE — TACKLER executes a clean tackle against OPPONENT, halting the attack and keeping the score at CURRENT_SCORE."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Tackler: TACKLER
+Opponent: OPPONENT
+
+OUTPUT:
+"At minute EVENT_MINUTE, TACKLER successfully challenges OPPONENT, disrupting their play and maintaining the current score of CURRENT_SCORE."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Tackler: {player1}
+Opponent: {player2}
+
+OUTPUT:"""
+
+
+def prompt_foul(home_team, away_team, current_score, minute, player, reason, card):
+    return f"""TASK:
+Describe a foul event.
+
+STRICT RULES:
+- Mention fouling player, reason, and if given, the card color.
+- Mention event minute.
+- No invented details.
+
+EXAMPLES:
+
+Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Player: PLAYER
-PLAYER Stats This Season:
-Position: POSITION
-Goals: GOALS
-Assists: ASSISTS
-Yellow Cards: YELLOW_CARDS
+Reason: REASON
+Card: CARD
 
 OUTPUT:
-"Minute EVENT_MINUTE — PLAYER is shown his YELLOW_CARDS yellow card of the season. A tough blow for AWAY_TEAM, who trail CURRENT_SCORE.
+"Minute EVENT_MINUTE — PLAYER commits a foul for REASON, receiving a CARD card. The score remains CURRENT_SCORE."
 
-NOW GENERATE USING THE FOLLOWING DATA
-
-Match: {home_team} vs {away_team}
-Current Score: {current_score}
-Event Minute: {minute}
-Scorer: {player}
-{player} Stats This Season:
-{stats_block}
-"""
-    else:
-        # Default fallback prompt (can be extended for other event types)
-        prompt = f"""TASK:
-You are a live football commentator. Generate a lively commentary sentence using only the provided data.
----
+Example 2:
 INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Player: PLAYER
+Reason: REASON
+Card: None
+
+OUTPUT:
+"At minute EVENT_MINUTE, PLAYER is penalized for REASON but avoids a card. The score is still CURRENT_SCORE."
+
+---
+
 Match: {home_team} vs {away_team}
 Current Score: {current_score}
 Event Minute: {minute}
 Player: {player}
-{player} Stats This Season:
-{stats_block}
+Reason: {reason}
+Card: {card}
 
 OUTPUT:"""
 
-    return prompt.strip()
+
+def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success):
+    return f"""TASK:
+Describe a pass in football.
+
+STRICT RULES:
+- Mention passer, receiver, pass type, and outcome.
+- Mention event minute.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Passer: PASSER
+Receiver: RECEIVER
+Pass Type: PASS_TYPE
+Outcome: SUCCESS
+
+OUTPUT:
+"Minute EVENT_MINUTE — PASSER delivers a PASS_TYPE pass to RECEIVER, resulting in a successful play. The score remains CURRENT_SCORE."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Passer: PASSER
+Receiver: RECEIVER
+Pass Type: PASS_TYPE
+Outcome: FAILURE
+
+OUTPUT:
+"At minute EVENT_MINUTE, PASSER attempts a PASS_TYPE pass to RECEIVER, but it fails to connect. The score stays at CURRENT_SCORE."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Passer: {passer}
+Receiver: {receiver}
+Pass Type: {pass_type}
+Outcome: {success}
+
+OUTPUT:"""
 
 
+def prompt_var_call(home_team, away_team, current_score, minute, reason):
+    return f"""TASK:
+Describe a VAR review moment.
+
+STRICT RULES:
+- Mention reason for the review.
+- Mention event minute.
+- No invented details.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Reason: REASON
+
+OUTPUT:
+"At minute EVENT_MINUTE, the referee pauses the game for a VAR review due to REASON. The tension is palpable as everyone awaits the decision."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Reason: REASON
+
+OUTPUT:
+"Minute EVENT_MINUTE — VAR review underway following REASON. The match momentarily halts as officials review the play."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Reason: {reason}
+
+OUTPUT:"""
 
 
+def prompt_offside(home_team, away_team, current_score, minute, passer, receiver):
+    return f"""TASK:
+Describe an offside call.
 
-new_event = {"minute": 36, "type": "goal", "player": "Gabriel Jesus"}
-new_context = {
-    "name": "Gabriel Jesus",
-    "position": "STRIKER",
-    "goals": 10,
-    "assists": 12,
-    "minutes_played": 1100,
-    "yellow_cards": 2,
-    "red_cards": 0
-}
+STRICT RULES:
+- Mention passer and receiver.
+- Mention event minute.
 
-prompt = build_prompt(
-    home_team="Arsenal",
-    away_team="Manchester City",
-    current_score="1-0",
-    event=new_event,
-    context=new_context,)
+EXAMPLES:
 
-# Passa prompt al modello e genera output
-inputs = tokenizer(prompt, return_tensors="pt").to(device)
-outputs = model.generate(
-    inputs["input_ids"],
-    attention_mask=inputs["attention_mask"],
-    max_new_tokens=150,
-    do_sample=True,
-    top_p=0.85,
-    temperature=0.7,
-    no_repeat_ngram_size=2,
-    pad_token_id=tokenizer.eos_token_id,
-)
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Passer: PASSER
+Receiver: RECEIVER
 
-generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-if "Commentary:" in generated_text:
-    commentary = generated_text.split("Commentary:")[1].strip()
-    commentary = trim_to_last_complete_sentence(commentary)
+OUTPUT:
+"At minute EVENT_MINUTE, the assistant referee raises the flag for offside against RECEIVER after a pass from PASSER. The attack is stopped immediately."
 
-else:
-    commentary = generated_text
-    commentary = trim_to_last_complete_sentence(commentary)
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Passer: PASSER
+Receiver: RECEIVER
+
+OUTPUT:
+"Minute EVENT_MINUTE — RECEIVER is caught offside following a through ball from PASSER, halting the promising move."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Passer: {passer}
+Receiver: {receiver}
+
+OUTPUT:"""
 
 
-print("\n🎙️ Commentary for new event:")
-print(commentary)
+def prompt_start_end_game(home_team, away_team, minute, game_status):
+    return f"""TASK:
+Describe the start or end of the game in a single sentence.
+
+STRICT RULES:
+- Mention whether it’s the start or end.
+- Mention the minute if relevant.
+- No invented match events.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Event Minute: 0
+Game Status: start
+
+OUTPUT:
+"The match between HOME_TEAM and AWAY_TEAM kicks off at minute 0, with both teams eager to make their mark."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Event Minute: 90
+Game Status: end
+
+OUTPUT:
+"The final whistle blows at minute 90, bringing the exciting contest between HOME_TEAM and AWAY_TEAM to a close."
+
+---
+
+Match: {home_team} vs {away_team}
+Event Minute: {minute}
+Game Status: {game_status}
+
+OUTPUT:"""
+
+
+def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats):
+    return f"""TASK:
+Describe a substitution.
+
+STRICT RULES:
+- Mention player coming in and player going out.
+- Mention event minute.
+- Use provided player info and stats only.
+
+EXAMPLES:
+
+Example 1:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: 60
+Player In: PLAYER_IN
+Player Out: PLAYER_OUT
+PLAYER_IN Info: AGE: 28, POSITION: MIDFIELDER
+PLAYER_IN Stats: Appearances: 15, Goals: 3
+PLAYER_OUT Info: AGE: 32, POSITION: MIDFIELDER
+PLAYER_OUT Stats: Appearances: 20, Goals: 1
+
+OUTPUT:
+"Minute 60 — PLAYER_IN replaces PLAYER_OUT, bringing fresh energy to HOME_TEAM's midfield."
+
+Example 2:
+INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: 75
+Player In: PLAYER_IN
+Player Out: PLAYER_OUT
+PLAYER_IN Info: AGE: 22, POSITION: FORWARD
+PLAYER_IN Stats: Appearances: 10, Goals: 7
+PLAYER_OUT Info: AGE: 30, POSITION: FORWARD
+PLAYER_OUT Stats: Appearances: 18, Goals: 5
+
+OUTPUT:
+"At minute 75, PLAYER_IN comes on for PLAYER_OUT to bolster HOME_TEAM's attacking options."
+
+---
+
+Match: {home_team} vs {away_team}
+Current Score: {current_score}
+Event Minute: {minute}
+Player In: {player_in}
+Player Out: {player_out}
+{player_in} Info: {player_in_info}
+{player_in} Stats: {player_in_stats}
+{player_out} Info: {player_out_info}
+{player_out} Stats: {player_out_stats}
+
+OUTPUT:"""
+
+
+def build_prompt(event_type, **kwargs):
+    event_type = event_type.lower()
+
+    if event_type == "goal":
+        return prompt_goal(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["scorer"], kwargs["assist"], kwargs["goal_type"], kwargs["shot_position"],
+            kwargs["player_info"], kwargs["player_stats"]
+        )
+
+    elif event_type == "attempted_shot":
+        return prompt_attempted_shot(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["shooter"], kwargs["outcome"], kwargs["shot_position"],
+            kwargs["shooter_info"], kwargs["shooter_stats"]
+        )
+
+    elif event_type == "dribbling":
+        return prompt_dribbling(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["player1"], kwargs["player2"],
+            kwargs["player1_info"], kwargs["player1_stats"]
+        )
+
+    elif event_type == "tackle":
+        return prompt_tackle(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["player1"], kwargs["player2"]
+        )
+
+    elif event_type == "foul":
+        return prompt_foul(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["player"], kwargs["reason"], kwargs["card"]
+        )
+
+    elif event_type == "pass":
+        return prompt_pass(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["passer"], kwargs["receiver"],
+            kwargs["pass_type"], kwargs["success"]
+        )
+
+    elif event_type == "var_call":
+        return prompt_var_call(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["reason"]
+        )
+
+    elif event_type == "offside":
+        return prompt_offside(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["passer"], kwargs["receiver"]
+        )
+
+    elif event_type == "start_end_game":
+        return prompt_start_end_game(
+            kwargs["home_team"], kwargs["away_team"], kwargs["minute"], kwargs["game_status"]
+        )
+
+    elif event_type == "substitution":
+        return prompt_substitution(
+            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
+            kwargs["minute"], kwargs["player_in"], kwargs["player_out"],
+            kwargs["player_in_info"], kwargs["player_in_stats"], 
+            kwargs["player_out_info"], kwargs["player_out_stats"]
+        )
+
+    else:
+        raise ValueError(f"❌ Unknown event type: {event_type}")
+
 
 
 

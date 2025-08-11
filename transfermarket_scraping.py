@@ -16,6 +16,7 @@ def search_team_by_name(name):
         print(f"Error searching team: {response.status_code}")
         return None
 
+
 def search_player_by_name(name):
     url = f"{BASE_URL}/players/search/{name}"
     response = requests.get(url)
@@ -38,7 +39,16 @@ def get_team_info(club_id):
     else:
         print(f"Error retrieving team info for {club_id}: {response.status_code}")
         return None
-
+    
+def get_team_players(club_id):
+    url = f"{BASE_URL}/clubs/{club_id}/players"
+    response = requests.get(url)
+    if response.ok:
+        return response.json()
+    else:
+        print(f"Error retrieving players for {club_id}: {response.status_code}")
+        return None
+    
 def get_player_info(player_id):
     url = f"{BASE_URL}/players/{player_id}/profile"
     response = requests.get(url)
@@ -78,12 +88,19 @@ if __name__ == "__main__":
     if team_a_id:
         print("\nTEAM A INFO:")
         team_a_info = get_team_info(team_a_id)
+        team_a_players = get_team_players(team_a_id)
         print(team_a_info)
+        print("\nTeam A Players:")
+        print(team_a_players)
 
     if team_b_id:
         print("\nTEAM B INFO:")
         team_b_info = get_team_info(team_b_id)
+        team_b_players = get_team_players(team_b_id)
         print(team_b_info)
+        print("\nTeam B Players:")
+        print(team_b_players)
+
 
     if player_id:
         print("\nPLAYER INFO:")
