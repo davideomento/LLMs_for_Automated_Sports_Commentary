@@ -55,7 +55,6 @@ def build_prompt(home_team, away_team, current_score, event, context):
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
 ---
----
 
 STRICT RULES:
 - Use ONLY the exact data provided below.
