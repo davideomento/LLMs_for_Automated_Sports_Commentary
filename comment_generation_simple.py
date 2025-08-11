@@ -55,6 +55,14 @@ def build_prompt(home_team, away_team, current_score, event, context):
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
 ---
+---
+
+STRICT RULES:
+- Use ONLY the exact data provided below.
+- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
+- If a statistic is missing, do NOT mention it.
+- Mention the exact event minute and current score as given.
+- Use all names exactly as provided without modification.
 
 EXAMPLE 1(anonymous):
 INPUT:
@@ -114,14 +122,7 @@ Assists: 8
 
 OUTPUT:
 "Minute 78 — Mohamed Salah strikes again! With 22 goals and 8 assists this season, he continues to be Liverpool’s attacking powerhouse. The score is now 3-2."
----
 
-STRICT RULES:
-- Use ONLY the exact data provided below.
-- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
-- If a statistic is missing, do NOT mention it.
-- Mention the exact event minute and current score as given.
-- Use all names exactly as provided without modification.
 ---
 
 === NOW GENERATE USING THE FOLLOWING DATA ===
@@ -159,21 +160,10 @@ PLAYER Stats This Season:
 Position: POSITION
 Goals: GOALS
 Assists: ASSISTS
+Yellow Cards: YELLOW_CARDS
 
 OUTPUT:
-"Minute EVENT_MINUTE — PLAYER gets a yellow card, it's his third of the season. Bad moment for AWAY_TEAM as they are losing CURRENT_SCORE."
-
-Example 2
-"Minute EVENT_MINUTE — SCORER strikes again! With GOALS goals and ASSISTS assists this season, they continue to be a key player for HOME_TEAM. The score is now CURRENT_SCORE."
-
-Example 3
-"Minute EVENT_MINUTE — SCORER scores a rare goal! Despite scoring 0 goals and providing 3 assists this season, its contribution remains crucial. The score is now CURRENT_SCORE."
-
-Example 4
-"Minute 78 — Mohamed Salah strikes again! With 22 goals and 8 assists this season, he continues to be Liverpool’s attacking powerhouse. The score is now 3-2."
-
-Example 5
-"Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists this season, he's proving his worth. Chelsea now lead 2-1."
+"Minute EVENT_MINUTE — PLAYER is shown his YELLOW_CARDS yellow card of the season. A tough blow for AWAY_TEAM, who trail CURRENT_SCORE.
 
 NOW GENERATE USING THE FOLLOWING DATA
 
