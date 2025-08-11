@@ -52,8 +52,8 @@ def build_prompt(home_team, away_team, current_score, event, context):
     # GOAL
     if event_type == "goal":
         prompt = f"""TASK:
-You are a live football commentator. Generate a lively, natural-sounding commentary sentence using only the provided data.
-
+Act as a live football commentator. Using only the provided match data, create a vivid,
+energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
 ---
 
 EXAMPLE 1(anonymous):
@@ -116,23 +116,6 @@ OUTPUT:
 "Minute 78 — Mohamed Salah strikes again! With 22 goals and 8 assists this season, he continues to be Liverpool’s attacking powerhouse. The score is now 3-2."
 ---
 
-EXAMPLE 5(real data):
-INPUT:
-Match: Chelsea vs Manchester United
-Current Score: 2-1
-Event Minute: 45
-Scorer: Cole Palmer
-SCORER Stats This Season:
-Position: MIDFIELDER
-Goals: 10
-Assists: 15
-Minutes Played: 1648
-Yellow Cards: 4
-
-OUTPUT:
-"Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists this season, he's proving his worth. Chelsea now lead 2-1."
----
-
 STRICT RULES:
 - Use ONLY the exact data provided below.
 - Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
@@ -156,21 +139,51 @@ OUTPUT:"""
 
     # YELLOW CARD
     elif event_type == "yellow_card":
-        prompt = f"""TASK:
-You are a live football commentator. Generate a lively, natural-sounding commentary sentence using only the provided data.
-Here are shown examples of input and of the output you should generate.
----
+        prompt = f"""TASK
+Act as a live football commentator. Using only the provided match data, create a vivid, energetic, and natural-sounding single-sentence commentary describing the moment a player gets a yellow card.
 
+STRICT RULES
+- Use only the exact data provided.
+- Do not invent, guess, or add any extra context.
+- If a statistic is missing, do not mention it.
+- Mention the exact event minute.
+- Use all names exactly as provided without modification.
 
+Example 1
 INPUT:
+Match: HOME_TEAM vs AWAY_TEAM
+Current Score: CURRENT_SCORE
+Event Minute: EVENT_MINUTE
+Player: PLAYER
+PLAYER Stats This Season:
+Position: POSITION
+Goals: GOALS
+Assists: ASSISTS
+
+OUTPUT:
+"Minute EVENT_MINUTE — PLAYER gets a yellow card, it's his third of the season. Bad moment for AWAY_TEAM as they are losing CURRENT_SCORE."
+
+Example 2
+"Minute EVENT_MINUTE — SCORER strikes again! With GOALS goals and ASSISTS assists this season, they continue to be a key player for HOME_TEAM. The score is now CURRENT_SCORE."
+
+Example 3
+"Minute EVENT_MINUTE — SCORER scores a rare goal! Despite scoring 0 goals and providing 3 assists this season, its contribution remains crucial. The score is now CURRENT_SCORE."
+
+Example 4
+"Minute 78 — Mohamed Salah strikes again! With 22 goals and 8 assists this season, he continues to be Liverpool’s attacking powerhouse. The score is now 3-2."
+
+Example 5
+"Minute 45 — Cole Palmer fires it home! With 10 goals and 15 assists this season, he's proving his worth. Chelsea now lead 2-1."
+
+NOW GENERATE USING THE FOLLOWING DATA
+
 Match: {home_team} vs {away_team}
 Current Score: {current_score}
 Event Minute: {minute}
-Player: {player}
+Scorer: {player}
 {player} Stats This Season:
 {stats_block}
-
-OUTPUT:"""
+"""
     else:
         # Default fallback prompt (can be extended for other event types)
         prompt = f"""TASK:
