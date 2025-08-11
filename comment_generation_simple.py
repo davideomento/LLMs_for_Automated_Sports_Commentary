@@ -71,8 +71,10 @@ Event Minute: EVENT_MINUTE
 Scorer: SCORER
 SCORER Stats This Season:
 Position: POSITION
-Goals: 12
-Assists: 5
+Goals: GOALS
+Assists: ASSISTS
+Yellow Cards: YELLOW_CARDS
+Red Cards: RED_CARDS
 
 OUTPUT:
 "GOAL at EVENT_MINUTE! SCORER finds the net again — with 12 goals and 5 assists this season, he’s showing why he’s a key man for HOME_TEAM. The score is now CURRENT_SCORE."
@@ -88,6 +90,8 @@ SCORER Stats This Season:
 Position: POSITION
 Goals: GOALS
 Assists: ASSISTS
+Yellow Cards: YELLOW_CARDS
+Red Cards: RED_CARDS
 
 OUTPUT:
 "Minute EVENT_MINUTE — SCORER strikes again! With GOALS goals and ASSISTS assists this season, they continue to be a key player for HOME_TEAM. The score is now CURRENT_SCORE.
