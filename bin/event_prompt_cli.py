@@ -9,7 +9,7 @@ from transfermarkt_api import(
     get_team_players,   
     search_competition_by_name
 )
-from prompt_builder import build_prompt 
+from single_event_prompt_cli import build_prompt 
 
 
 def fetch_player_data(name):
@@ -72,10 +72,10 @@ def main():
         print("❌ Invalid team selection.")
         return
 
-    home_info = get_team_info(home_team['id'])
-    home_stats = get_team_players(home_team['id'])
-    away_info = get_team_info(away_team['id'])
-    away_stats = get_team_players(away_team['id'])
+    team_profile_home = get_team_info(home_team['id'])
+    team_players_home = get_team_players(home_team['id'])
+    team_profile_away = get_team_info(away_team['id'])
+    team_players_away = get_team_players(away_team['id'])
 
     minute = input("Enter event minute: ").strip()
 
@@ -107,10 +107,10 @@ def main():
         "competition": competition_name,
         "home_team": home_team['name'],
         "away_team": away_team['name'],
-        "home_team_info": home_info,
-        "home_team_stats": home_stats,
-        "away_team_info": away_info,
-        "away_team_stats": away_stats,
+        "team_profile_home": team_profile_home,
+        "team_profile_away": team_profile_away,
+        "team_players_home": team_players_home,
+        "team_players_away": team_players_away,
         "current_score": input("Current score (e.g., 1-0): ")
     }
 
@@ -123,10 +123,10 @@ def main():
 
         if team_choice == "1":
             selected_team_name = home_team['name']
-            selected_team_players = home_stats
+            selected_team_players = team_players_home
         elif team_choice == "2":
             selected_team_name = away_team['name']
-            selected_team_players = away_stats
+            selected_team_players = team_players_away
         else:
             print("❌ Invalid team choice.")
             return
@@ -150,7 +150,7 @@ def main():
     # ==== Map input parameters to prompt-required names ====
     if event_type == "goal":
         goal_types = {"1": "Right foot", "2": "Left foot", "3": "Header", "4": "Other"}
-        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot"}
+        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot", "4": "Free kick"}
         print("\nGoal type options:")
         for k, v in goal_types.items(): print(f"{k}. {v}")
         goal_type = goal_types.get(input("Select goal type: "), "Unknown")
@@ -169,7 +169,8 @@ def main():
             "scorer_achievements": player_achievements,
             "assist": assist,
             "goal_type": goal_type,
-            "shot_position": shot_position
+            "shot_position": shot_position,
+            
         })
 
     elif event_type == "attempted_shot":
@@ -194,7 +195,7 @@ def main():
 
     elif event_type == "dribbling":
         print("Select defender from opposing team:")
-        opposing_team_players = home_stats if selected_team_name == away_team['name'] else away_stats
+        opposing_team_players = team_players_home if selected_team_name == away_team['name'] else team_players_away
         for idx, player in enumerate(opposing_team_players, 1):
             print(f"{idx}. {player['name']}")
         defender_idx = input("Enter defender number: ").strip()
@@ -214,7 +215,7 @@ def main():
 
     elif event_type == "tackle":
         print("Select opponent from opposing team:")
-        opposing_team_players = home_stats if selected_team_name == away_team['name'] else away_stats
+        opposing_team_players = team_players_home if selected_team_name == away_team['name'] else team_players_away
         for idx, player in enumerate(opposing_team_players, 1):
             print(f"{idx}. {player['name']}")
         opponent_idx = input("Enter opponent number: ").strip()

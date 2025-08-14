@@ -88,10 +88,11 @@ def main():
         print("❌ Invalid team selection.")
         return
 
-    home_info = get_team_info(home_team['id'])
-    home_stats = get_team_players(home_team['id'])
-    away_info = get_team_info(away_team['id'])
-    away_stats = get_team_players(away_team['id'])
+
+    team_profile_home = get_team_info(home_team['id'])
+    team_players_home = get_team_players(home_team['id'])
+    team_profile_away = get_team_info(away_team['id'])
+    team_players_away = get_team_players(away_team['id'])
 
     minute = input("Enter event minute: ").strip()
 
@@ -123,16 +124,16 @@ def main():
         "competition": competition_name,
         "home_team": home_team['name'],
         "away_team": away_team['name'],
-        "home_team_info": home_info,
-        "home_team_stats": home_stats,
-        "away_team_info": away_info,
-        "away_team_stats": away_stats,
+        "team_profile_home": team_profile_home,
+        "team_profile_away": team_profile_away,
+        "team_players_home": team_players_home,
+        "team_players_away": team_players_away,
         "current_score": input("Current score (e.g., 1-0): ")
     }
 
     # ==== EVENT-SPECIFIC PLAYER SELECTION ====
     if event_type == "goal":
-        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, home_stats, away_team, away_stats)
+        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, team_players_home, away_team, team_players_away)
         if not selected_team_name:
             return
 
@@ -144,7 +145,7 @@ def main():
         scorer_info, scorer_stats, scorer_achievements = fetch_player_data(scorer_name)
 
         goal_types = {"1": "Right foot", "2": "Left foot", "3": "Header", "4": "Other"}
-        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot"}
+        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot", "4": "Free kick"}
         print("\nGoal type options:")
         for k, v in goal_types.items(): print(f"{k}. {v}")
         goal_type = goal_types.get(input("Select goal type: "), "Unknown")
@@ -153,30 +154,89 @@ def main():
         for k, v in shot_positions.items(): print(f"{k}. {v}")
         shot_position = shot_positions.get(input("Select shot position: "), "Unknown")
 
-        assist = input("Assist name (or leave blank): ")
+        print(f"\nSelect the player who made the assist from {selected_team_name}:")
+        print("0. None")  # Opzione per nessun assist
+        for idx, player in enumerate(selected_team_players, 1):
+            print(f"{idx}. {player['name']}")
+
+        assist_input = input("Enter assist player number (or 0 for None): ").strip()
+
+        if assist_input == "0" or assist_input.lower() == "none":
+            assist_name = None
+        else:
+            assist_idx = int(assist_input) - 1
+            assist_name = selected_team_players[assist_idx]['name']
 
         kwargs.update({
             "scorer": scorer_name,
             "scorer_info": scorer_info,
             "scorer_stats": scorer_stats,
             "scorer_achievements": scorer_achievements,
-            "assist": assist,
+            "assist": assist_name,
             "goal_type": goal_type,
             "shot_position": shot_position
         })
 
-    elif event_type in ["pass", "offside"]:
-        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, home_stats, away_team, away_stats)
+    elif event_type == "pass":
+        selected_team_name, selected_team_players, _ = select_team_and_players(
+            home_team, team_players_home, away_team, team_players_away
+        )
         if not selected_team_name:
             return
 
+        # Passer
         print("\nSelect passer from this team:")
         for idx, player in enumerate(selected_team_players, 1):
             print(f"{idx}. {player['name']}")
         passer_idx = int(input("Enter passer number: ").strip()) - 1
         passer_name = selected_team_players[passer_idx]['name']
-        passer_info, passer_stats, passer_achievements = fetch_player_data(passer_name)
 
+        # Receiver
+        print("\nSelect receiver from same team:")
+        for idx, player in enumerate(selected_team_players, 1):
+            print(f"{idx}. {player['name']}")
+        receiver_idx = int(input("Enter receiver number: ").strip()) - 1
+        receiver_name = selected_team_players[receiver_idx]['name']
+
+        # Pass type (numeric)
+        pass_types = {
+            "1": "Short pass",
+            "2": "Long pass",
+            "3": "Through ball",
+            "4": "Cross"
+        }
+        print("\nPass type options:")
+        for k, v in pass_types.items():
+            print(f"{k} = {v}")
+        pass_type_choice = input("Select pass type number (1-4): ").strip()
+        pass_type = pass_types.get(pass_type_choice, "Unknown")
+
+        # Pass success (0 = success, 1 = fail)
+        success_choice = input("Was the pass successful? (1 = Yes, 0 = No): ").strip()
+        success = "successful" if success_choice == "0" else "unsuccessful"
+
+        kwargs.update({
+            "passer": passer_name,
+            "receiver": receiver_name,
+            "pass_type": pass_type,
+            "success": success
+        })
+
+    elif event_type == "offside":
+        selected_team_name, selected_team_players, _ = select_team_and_players(
+            home_team, team_players_home, away_team, team_players_away
+        )
+        if not selected_team_name:
+            return
+
+        # Passer
+        print("\nSelect passer from this team:")
+        for idx, player in enumerate(selected_team_players, 1):
+            print(f"{idx}. {player['name']}")
+        passer_idx = int(input("Enter passer number: ").strip()) - 1
+        passer_name = selected_team_players[passer_idx]['name']
+
+        # Receiver
         print("\nSelect receiver from same team:")
         for idx, player in enumerate(selected_team_players, 1):
             print(f"{idx}. {player['name']}")
@@ -185,39 +245,76 @@ def main():
 
         kwargs.update({
             "passer": passer_name,
-            "receiver": receiver_name,
-            "passer_info": passer_info,
-            "passer_stats": passer_stats,
-            "passer_achievements": passer_achievements
+            "receiver": receiver_name
         })
 
-    elif event_type in ["dribbling", "tackle"]:
-        selected_team_name, selected_team_players, opposing_team_players = select_team_and_players(home_team, home_stats, away_team, away_stats)
+    # Dribbling event
+    elif event_type == "dribbling":
+        selected_team_name, selected_team_players, opposing_team_players = select_team_and_players(
+            home_team, team_players_home, away_team, team_players_away
+        )
         if not selected_team_name:
             return
 
-        print("\nSelect player performing the action:")
+        print("\nSelect dribbler:")
         for idx, player in enumerate(selected_team_players, 1):
             print(f"{idx}. {player['name']}")
-        player_idx = int(input("Enter player number: ").strip()) - 1
-        player_name = selected_team_players[player_idx]['name']
-        player_info, player_stats, player_achievements = fetch_player_data(player_name)
+        dribbler_idx = int(input("Enter dribbler number: ").strip()) - 1
+        dribbler_name = selected_team_players[dribbler_idx]['name']
+        dribbler_info, dribbler_stats, dribbler_achievements = fetch_player_data(dribbler_name)
 
-        print("\nSelect opponent from opposing team:")
+        print("\nSelect opponent:")
         for idx, player in enumerate(opposing_team_players, 1):
             print(f"{idx}. {player['name']}")
         opponent_idx = int(input("Enter opponent number: ").strip()) - 1
         opponent_name = opposing_team_players[opponent_idx]['name']
 
+        success_choice = input("Was the dribble successful? (1 = Yes, 0 = No): ").strip()
+        success = "successful" if success_choice == "1" else "unsuccessful"
+
         kwargs.update({
-            "player": player_name,
-            "player_info": player_info,
-            "player_stats": player_stats,
-            "opponent": opponent_name
+            "dribbler": dribbler_name,
+            "dribbler_info": dribbler_info,
+            "dribbler_stats": dribbler_stats,
+            "opponent": opponent_name,
+            "success": success
         })
 
+    # Tackle event
+    elif event_type == "tackle":
+        selected_team_name, selected_team_players, opposing_team_players = select_team_and_players(
+            home_team, team_players_home, away_team, team_players_away
+        )
+        if not selected_team_name:
+            return
+
+        print("\nSelect tackler:")
+        for idx, player in enumerate(selected_team_players, 1):
+            print(f"{idx}. {player['name']}")
+        tackler_idx = int(input("Enter tackler number: ").strip()) - 1
+        tackler_name = selected_team_players[tackler_idx]['name']
+        tackler_info, tackler_stats, tackler_achievements = fetch_player_data(tackler_name)
+
+        print("\nSelect opponent:")
+        for idx, player in enumerate(opposing_team_players, 1):
+            print(f"{idx}. {player['name']}")
+        opponent_idx = int(input("Enter opponent number: ").strip()) - 1
+        opponent_name = opposing_team_players[opponent_idx]['name']
+
+        success_choice = input("Was the tackle successful? (1 = Yes, 0 = No): ").strip()
+        success = "successful" if success_choice == "1" else "unsuccessful"
+
+        kwargs.update({
+            "tackler": tackler_name,
+            "tackler_info": tackler_info,
+            "tackler_stats": tackler_stats,
+            "opponent": opponent_name,
+            "success": success
+        })
+
+
     elif event_type == "foul":
-        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, home_stats, away_team, away_stats)
+        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, team_players_home, away_team, team_players_away)
         if not selected_team_name:
             return
 
@@ -246,7 +343,7 @@ def main():
         })
 
     elif event_type == "attempted_shot":
-        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, home_stats, away_team, away_stats)
+        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, team_players_home, away_team, team_players_away)
         if not selected_team_name:
             return
 
@@ -258,7 +355,7 @@ def main():
         shooter_info, shooter_stats, shooter_achievements = fetch_player_data(shooter_name)
 
         shot_outcomes = {"1": "Saved", "2": "Missed", "3": "Blocked"}
-        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot"}
+        shot_positions = {"1": "Inside box", "2": "Outside box", "3": "Penalty spot", "4": "Free kick"}
         print("\nShot outcome options:")
         for k, v in shot_outcomes.items(): print(f"{k}. {v}")
         outcome = shot_outcomes.get(input("Select outcome number: "), "Unknown")
@@ -277,17 +374,52 @@ def main():
         })
 
     elif event_type == "var_call":
+        selected_team_name, selected_team_players, _ = select_team_and_players(
+            home_team, team_players_home, away_team, team_players_away
+        )
+        if not selected_team_name:
+            return
+
+        var_reasons = {
+            "1": "Potential penalty",
+            "2": "Offside",
+            "3": "Handball",
+            "4": "Foul",
+            "5": "Goal review",
+            "6": "Mistaken identity",
+            "7": "Other"
+        }
+
+        print("\nVAR call reason options:")
+        for k, v in var_reasons.items():
+            print(f"{k}. {v}")
+
+        reason_choice = input("Select reason number: ").strip()
+        reason = var_reasons.get(reason_choice, "Unknown")
+
         kwargs.update({
-            "reason": input("Reason for VAR review: ")
+            "team": selected_team_name,
+            "reason": reason
         })
 
     elif event_type == "start_end_game":
+        status_options = {
+            "0": "start",
+            "1": "end"
+        }
+        print("\nGame status options:")
+        for k, v in status_options.items():
+            print(f"{k}. {v}")
+
+        status_choice = input("Select game status number: ").strip()
+        game_status = status_options.get(status_choice, "Unknown")
+
         kwargs.update({
-            "game_status": input("Game status (start/end): ")
+            "game_status": game_status
         })
 
     elif event_type == "substitution":
-        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, home_stats, away_team, away_stats)
+        selected_team_name, selected_team_players, _ = select_team_and_players(home_team, team_players_home, away_team, team_players_away)
         if not selected_team_name:
             return
 

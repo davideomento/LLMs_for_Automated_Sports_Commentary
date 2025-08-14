@@ -1,7 +1,7 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+'''from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import re
-
+'''
 '''def trim_to_last_complete_sentence(text):
     sentences = re.split(r'(?<=[.!?]) +', text)
     return " ".join(sentences[:-1]) if len(sentences) > 1 else text
@@ -22,7 +22,7 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")'''
 
 
-def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements):
+def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements, team_profile_away, team_profile_home):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
@@ -37,6 +37,8 @@ STRICT RULES:
 EXAMPLE 1 :
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Scorer: SCORER
@@ -54,6 +56,8 @@ he's proving to be a key man for HOME_TEAM. The score is now CURRENT_SCORE. Cred
 EXAMPLE 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Scorer: SCORER
@@ -72,6 +76,8 @@ The score is now CURRENT_SCORE, thanks to a precise assist from ASSISTER."
 
 INPUT:
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Scorer: {scorer}
@@ -82,9 +88,10 @@ Position of the shot: {shot_position}
 {scorer} Stats: {player_stats}
 {scorer} Achievements: {player_achievements}
 
+
 OUTPUT:"""
 
-def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements):
+def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements, team_profile_away, team_profile_home):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, accurate single-sentence commentary describing an attempted shot.
 
@@ -98,6 +105,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Shooter: SHOOTER
@@ -113,14 +122,16 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Shooter: SHOOTER
 Outcome: OUTCOME
 Position of the shot: SHOT_POSITION
-SHOOTER Info: SHOOTER_INFO
-SHOOTER Stats: SHOOTER_STATS
-SHOOTER Achievements: SHOOTER_ACHIEVEMENTS
+Shooter Info: SHOOTER_INFO
+Shooter Stats: SHOOTER_STATS
+Shooter Achievements: SHOOTER_ACHIEVEMENTS
 
 OUTPUT:
 "Minute EVENT_MINUTE — SHOOTER attempts a shot from SHOT_POSITION, but it goes OUTCOME. The score is still CURRENT_SCORE."
@@ -128,6 +139,8 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Shooter: {shooter}
@@ -139,7 +152,7 @@ Position of the shot: {shot_position}
 
 OUTPUT:"""
 
-def prompt_dribbling(home_team, away_team, current_score, minute, player1, player2, player1_info, player1_stats):
+def prompt_dribbling(home_team, away_team, current_score, minute, dribbler, opponent, dribbler_info, dribbler_stats, success, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe in one energetic sentence a dribbling action between two players.
 
@@ -153,6 +166,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Dribbler: DRIBBLER
@@ -165,6 +180,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Dribbler: DRIBBLER
@@ -176,16 +193,20 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
-Dribbler: {player1}
-Defender: {player2}
-{player1} Stats: {player1_stats}
+Dribbler: {dribbler}
+Defender: {opponent}
+{dribbler} Info: {dribbler_info}
+{dribbler} Stats: {dribbler_stats}
+Outcome: {success}
 
 OUTPUT:"""
 
 
-def prompt_tackle(home_team, away_team, current_score, minute, player1, player2):
+def prompt_tackle(home_team, away_team, current_score, minute, tackler, opponent, success, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe a football tackle in one sentence.
 
@@ -199,6 +220,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Tackler: TACKLER
@@ -210,6 +233,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Tackler: TACKLER
@@ -221,15 +246,18 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
-Tackler: {player1}
-Opponent: {player2}
+Tackler: {tackler}
+Opponent: {opponent}
+Success: {success}
 
 OUTPUT:"""
 
 
-def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats):
+def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe a foul event.
 
@@ -243,6 +271,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Player: PLAYER
@@ -257,6 +287,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Player: PLAYER
@@ -271,6 +303,8 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Player: {player}
@@ -282,7 +316,7 @@ Card: {card}
 OUTPUT:"""
 
 
-def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success):
+def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe a pass in football.
 
@@ -295,6 +329,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Passer: PASSER
@@ -308,6 +344,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Passer: PASSER
@@ -321,6 +359,8 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Passer: {passer}
@@ -331,7 +371,7 @@ Outcome: {success}
 OUTPUT:"""
 
 
-def prompt_var_call(home_team, away_team, current_score, minute, reason):
+def prompt_var_call(home_team, away_team, current_score, minute, reason, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe a VAR review moment.
 
@@ -345,6 +385,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Reason: REASON
@@ -355,6 +397,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Reason: REASON
@@ -365,6 +409,8 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Reason: {reason}
@@ -372,7 +418,7 @@ Reason: {reason}
 OUTPUT:"""
 
 
-def prompt_offside(home_team, away_team, current_score, minute, passer, receiver):
+def prompt_offside(home_team, away_team, current_score, minute, passer, receiver, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe an offside call.
 
@@ -385,6 +431,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Passer: PASSER
@@ -396,6 +444,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Current Score: CURRENT_SCORE
 Event Minute: EVENT_MINUTE
 Passer: PASSER
@@ -407,6 +457,8 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Passer: {passer}
@@ -415,7 +467,7 @@ Receiver: {receiver}
 OUTPUT:"""
 
 
-def prompt_start_end_game(home_team, away_team, minute, game_status):
+def prompt_start_end_game(home_team, away_team, minute, game_status, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe the start or end of the game in a single sentence.
 
@@ -429,6 +481,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Away: TEAM_PROFILE_AWAY
+Team Profile Home: TEAM_PROFILE_HOME
 Event Minute: 0
 Game Status: start
 
@@ -438,6 +492,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Event Minute: 90
 Game Status: end
 
@@ -447,13 +503,15 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Event Minute: {minute}
 Game Status: {game_status}
 
 OUTPUT:"""
 
 
-def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements):
+def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements,team_profile_away, team_profile_home):
     return f"""TASK:
 Describe a substitution.
 
@@ -467,6 +525,8 @@ EXAMPLES:
 Example 1:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Home: TEAM_PROFILE_HOME
+Team Profile Away: TEAM_PROFILE_AWAY
 Current Score: CURRENT_SCORE
 Event Minute: 60
 Player In: PLAYER_IN
@@ -484,14 +544,16 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
+Team Profile Home: TEAM_PROFILE_HOME
+Team Profile Away: TEAM_PROFILE_AWAY
 Current Score: CURRENT_SCORE
 Event Minute: 75
 Player In: PLAYER_IN
 Player Out: PLAYER_OUT
-PLAYER_IN Info: AGE: 22, POSITION: FORWARD
-PLAYER_IN Stats: Appearances: 10, Goals: 7
-PLAYER_OUT Info: AGE: 30, POSITION: FORWARD
-PLAYER_OUT Stats: Appearances: 18, Goals: 5
+Player In Info: AGE: 22, POSITION: FORWARD
+Player In Stats: Appearances: 10, Goals: 7
+Player Out Info: AGE: 30, POSITION: FORWARD
+Player Out Stats: Appearances: 18, Goals: 5
 Player In Achievements: PLAYER_IN_ACHIEVEMENTS
 Player Out Achievements: PLAYER_OUT_ACHIEVEMENTS
 
@@ -501,16 +563,19 @@ OUTPUT:
 ---
 
 Match: {home_team} vs {away_team}
+Team Profile Home: {team_profile_home}
+Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
 Player In: {player_in}
 Player Out: {player_out}
 {player_in} Info: {player_in_info}
 {player_in} Stats: {player_in_stats}
+{player_in} Achievements: {player_in_achievements}
 {player_out} Info: {player_out_info}
 {player_out} Stats: {player_out_stats}
-{player_in} Achievements: {player_in_achievements}
 {player_out} Achievements: {player_out_achievements}
+
 
 OUTPUT:"""
 
@@ -519,16 +584,16 @@ def build_prompt(event_type, **kwargs):
     event_type = event_type.lower()
 
     events = {
-        "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements"]),
-        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "current_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements"]),
-        "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "player1", "player2", "player1_info", "player1_stats"]),
-        "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent"]),
-        "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats"]),
-        "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success"]),
-        "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason"]),
-        "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver"]),
-        "start_end_game": (prompt_start_end_game, ["home_team", "away_team", "minute", "game_status"]),
-        "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements"])
+        "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements", "team_profile_away", "team_profile_home"]),
+        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "current_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home"]),
+        "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "dribbler", "opponent", "dribbler_info", "dribbler_stats", "success", "team_profile_away", "team_profile_home"]),
+        "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent", "success", "team_profile_away", "team_profile_home"]),
+        "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats",  "team_profile_away", "team_profile_home"]),
+        "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success", "team_profile_away", "team_profile_home"]),
+        "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason", "team_profile_away", "team_profile_home"]),
+        "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "team_profile_away", "team_profile_home"]),
+        "start_end_game": (prompt_start_end_game, ["home_team", "away_team", "minute", "game_status", "team_profile_away", "team_profile_home"]),
+        "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements", "team_profile_away", "team_profile_home"])
     }
 
     if event_type not in events:
