@@ -2,7 +2,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import re
 
-def trim_to_last_complete_sentence(text):
+'''def trim_to_last_complete_sentence(text):
     sentences = re.split(r'(?<=[.!?]) +', text)
     return " ".join(sentences[:-1]) if len(sentences) > 1 else text
 
@@ -19,10 +19,10 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 
 model.eval()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")'''
 
 
-def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats):
+def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
@@ -80,10 +80,11 @@ Goal Type: {goal_type}
 Position of the shot: {shot_position}
 {scorer} Info: {player_info}
 {scorer} Stats: {player_stats}
+{scorer} Achievements: {player_achievements}
 
 OUTPUT:"""
 
-def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats):
+def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, accurate single-sentence commentary describing an attempted shot.
 
@@ -104,6 +105,7 @@ Outcome: OUTCOME
 Position of the shot: SHOT_POSITION
 SHOOTER Info: SHOOTER_INFO
 SHOOTER Stats: SHOOTER_STATS
+SHOOTER Achievements: SHOOTER_ACHIEVEMENTS
 
 OUTPUT:
 "Minute EVENT_MINUTE — SHOOTER fires a shot from SHOT_POSITION, but it’s OUTCOME. Score remains CURRENT_SCORE."
@@ -118,6 +120,7 @@ Outcome: OUTCOME
 Position of the shot: SHOT_POSITION
 SHOOTER Info: SHOOTER_INFO
 SHOOTER Stats: SHOOTER_STATS
+SHOOTER Achievements: SHOOTER_ACHIEVEMENTS
 
 OUTPUT:
 "Minute EVENT_MINUTE — SHOOTER attempts a shot from SHOT_POSITION, but it goes OUTCOME. The score is still CURRENT_SCORE."
@@ -132,10 +135,11 @@ Outcome: {outcome}
 Position of the shot: {shot_position}
 {shooter} Info: {shooter_info}
 {shooter} Stats: {shooter_stats}
+{shooter} Achievements: {shooter_achievements}
 
 OUTPUT:"""
 
-def prompt_dribbling(home_team, away_team, current_score, minute, player1, player2, player1_info, player1_stats, successful_dribbles):
+def prompt_dribbling(home_team, away_team, current_score, minute, player1, player2, player1_info, player1_stats):
     return f"""TASK:
 Describe in one energetic sentence a dribbling action between two players.
 
@@ -176,7 +180,6 @@ Current Score: {current_score}
 Event Minute: {minute}
 Dribbler: {player1}
 Defender: {player2}
-{player1} Info: {player1_info} (Successful Dribbles: {successful_dribbles})
 {player1} Stats: {player1_stats}
 
 OUTPUT:"""
@@ -226,7 +229,7 @@ Opponent: {player2}
 OUTPUT:"""
 
 
-def prompt_foul(home_team, away_team, current_score, minute, player, reason, card):
+def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats):
     return f"""TASK:
 Describe a foul event.
 
@@ -245,6 +248,8 @@ Event Minute: EVENT_MINUTE
 Player: PLAYER
 Reason: REASON
 Card: CARD
+Player Info: PLAYER_INFO
+Player Stats: PLAYER_STATS  
 
 OUTPUT:
 "Minute EVENT_MINUTE — PLAYER commits a foul for REASON, receiving a CARD card. The score remains CURRENT_SCORE."
@@ -257,6 +262,8 @@ Event Minute: EVENT_MINUTE
 Player: PLAYER
 Reason: REASON
 Card: None
+Player Info: PLAYER_INFO
+Player Stats: PLAYER_STATS
 
 OUTPUT:
 "At minute EVENT_MINUTE, PLAYER is penalized for REASON but avoids a card. The score is still CURRENT_SCORE."
@@ -269,6 +276,8 @@ Event Minute: {minute}
 Player: {player}
 Reason: {reason}
 Card: {card}
+{player} Info: {player_info}
+{player} Stats: {player_stats}
 
 OUTPUT:"""
 
@@ -444,7 +453,7 @@ Game Status: {game_status}
 OUTPUT:"""
 
 
-def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats):
+def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements):
     return f"""TASK:
 Describe a substitution.
 
@@ -466,6 +475,8 @@ PLAYER_IN Info: AGE: 28, POSITION: MIDFIELDER
 PLAYER_IN Stats: Appearances: 15, Goals: 3
 PLAYER_OUT Info: AGE: 32, POSITION: MIDFIELDER
 PLAYER_OUT Stats: Appearances: 20, Goals: 1
+Player In Achievements: PLAYER_IN_ACHIEVEMENTS
+Player Out Achievements: PLAYER_OUT_ACHIEVEMENTS
 
 OUTPUT:
 "Minute 60 — PLAYER_IN replaces PLAYER_OUT, bringing fresh energy to HOME_TEAM's midfield."
@@ -481,6 +492,8 @@ PLAYER_IN Info: AGE: 22, POSITION: FORWARD
 PLAYER_IN Stats: Appearances: 10, Goals: 7
 PLAYER_OUT Info: AGE: 30, POSITION: FORWARD
 PLAYER_OUT Stats: Appearances: 18, Goals: 5
+Player In Achievements: PLAYER_IN_ACHIEVEMENTS
+Player Out Achievements: PLAYER_OUT_ACHIEVEMENTS
 
 OUTPUT:
 "At minute 75, PLAYER_IN comes on for PLAYER_OUT to bolster HOME_TEAM's attacking options."
@@ -496,6 +509,8 @@ Player Out: {player_out}
 {player_in} Stats: {player_in_stats}
 {player_out} Info: {player_out_info}
 {player_out} Stats: {player_out_stats}
+{player_in} Achievements: {player_in_achievements}
+{player_out} Achievements: {player_out_achievements}
 
 OUTPUT:"""
 
@@ -503,74 +518,29 @@ OUTPUT:"""
 def build_prompt(event_type, **kwargs):
     event_type = event_type.lower()
 
-    if event_type == "goal":
-        return prompt_goal(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["scorer"], kwargs["assist"], kwargs["goal_type"], kwargs["shot_position"],
-            kwargs["player_info"], kwargs["player_stats"]
-        )
+    events = {
+        "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements"]),
+        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "current_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements"]),
+        "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "player1", "player2", "player1_info", "player1_stats"]),
+        "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent"]),
+        "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats"]),
+        "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success"]),
+        "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason"]),
+        "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver"]),
+        "start_end_game": (prompt_start_end_game, ["home_team", "away_team", "minute", "game_status"]),
+        "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements"])
+    }
 
-    elif event_type == "attempted_shot":
-        return prompt_attempted_shot(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["shooter"], kwargs["outcome"], kwargs["shot_position"],
-            kwargs["shooter_info"], kwargs["shooter_stats"]
-        )
-
-    elif event_type == "dribbling":
-        return prompt_dribbling(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["player1"], kwargs["player2"],
-            kwargs["player1_info"], kwargs["player1_stats"]
-        )
-
-    elif event_type == "tackle":
-        return prompt_tackle(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["player1"], kwargs["player2"]
-        )
-
-    elif event_type == "foul":
-        return prompt_foul(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["player"], kwargs["reason"], kwargs["card"]
-        )
-
-    elif event_type == "pass":
-        return prompt_pass(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["passer"], kwargs["receiver"],
-            kwargs["pass_type"], kwargs["success"]
-        )
-
-    elif event_type == "var_call":
-        return prompt_var_call(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["reason"]
-        )
-
-    elif event_type == "offside":
-        return prompt_offside(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["passer"], kwargs["receiver"]
-        )
-
-    elif event_type == "start_end_game":
-        return prompt_start_end_game(
-            kwargs["home_team"], kwargs["away_team"], kwargs["minute"], kwargs["game_status"]
-        )
-
-    elif event_type == "substitution":
-        return prompt_substitution(
-            kwargs["home_team"], kwargs["away_team"], kwargs["current_score"],
-            kwargs["minute"], kwargs["player_in"], kwargs["player_out"],
-            kwargs["player_in_info"], kwargs["player_in_stats"], 
-            kwargs["player_out_info"], kwargs["player_out_stats"]
-        )
-
-    else:
+    if event_type not in events:
         raise ValueError(f"❌ Unknown event type: {event_type}")
 
+    func, required_params = events[event_type]
 
+    missing = [p for p in required_params if p not in kwargs]
+    if missing:
+        raise ValueError(f"❌ Missing parameters for {event_type}: {missing}")
+
+    # Richiama la funzione passando i parametri nell'ordine corretto
+    return func(*[kwargs[p] for p in required_params])
 
 
