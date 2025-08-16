@@ -20,12 +20,17 @@ model = AutoModelForCausalLM.from_pretrained(
 model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Funzione per generare testo
 def genera_frase(prompt: str, max_length: int = 200) -> str:
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
     outputs = model.generate(**inputs, max_new_tokens=max_length)
-    testo = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return trim_to_last_complete_sentence(testo)
+    testo_completo = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    # Rimuove il prompt e prende solo il testo generato
+    testo_generato = testo_completo[len(prompt):].strip()
+    
+    # Applica il trimming solo alla parte generata
+    return trim_to_last_complete_sentence(testo_generato)
+
 
 # Loop interattivo
 def main():
