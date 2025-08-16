@@ -165,6 +165,7 @@ def main():
             assist_name = selected_team_players[assist_idx]['name']
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "scorer": scorer_name,
             "scorer_info": scorer_info,
             "scorer_stats": scorer_stats,
@@ -213,6 +214,7 @@ def main():
         success = "successful" if success_choice == "0" else "unsuccessful"
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "passer": passer_name,
             "receiver": receiver_name,
             "pass_type": pass_type,
@@ -241,6 +243,7 @@ def main():
         receiver_name = selected_team_players[receiver_idx]['name']
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "passer": passer_name,
             "receiver": receiver_name
         })
@@ -270,6 +273,7 @@ def main():
         success = "successful" if success_choice == "1" else "unsuccessful"
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "dribbler": dribbler_name,
             "dribbler_info": dribbler_info,
             "dribbler_stats": dribbler_stats,
@@ -302,6 +306,7 @@ def main():
         success = "successful" if success_choice == "1" else "unsuccessful"
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "tackler": tackler_name,
             "tackler_info": tackler_info,
             "tackler_stats": tackler_stats,
@@ -332,6 +337,7 @@ def main():
         card = card_types.get(input("Select card number: "), "None")
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "player": player_name,
             "player_info": player_info,
             "player_stats": player_stats,
@@ -362,6 +368,7 @@ def main():
         shot_position = shot_positions.get(input("Select position number: "), "Unknown")
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "shooter": shooter_name,
             "shooter_info": shooter_info,
             "shooter_stats": shooter_stats,
@@ -437,6 +444,7 @@ def main():
         out_info, out_stats, out_achievements = fetch_player_data(player_out)
 
         kwargs.update({
+            "team_involved": selected_team_name,
             "player_in": player_in,
             "player_in_info": in_info,
             "player_in_stats": in_stats,

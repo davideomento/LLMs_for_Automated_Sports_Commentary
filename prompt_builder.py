@@ -1,4 +1,4 @@
-def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements, team_profile_away, team_profile_home):
+def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, exhaustive, and natural-sounding commentary describing the moment a goal is scored.
@@ -59,6 +59,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Scorer: {scorer}
 Assist: {assist}
 Goal Type: {goal_type}
@@ -70,7 +71,7 @@ Position of the shot: {shot_position}
 
 OUTPUT:"""
 
-def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements, team_profile_away, team_profile_home):
+def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing an attempted shot.
 
@@ -126,6 +127,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Shooter: {shooter}
 Outcome: {outcome}
 Position of the shot: {shot_position}
@@ -135,7 +137,7 @@ Position of the shot: {shot_position}
 
 OUTPUT:"""
 
-def prompt_dribbling(home_team, away_team, current_score, minute, dribbler, opponent, dribbler_info, dribbler_stats, success, team_profile_away, team_profile_home):
+def prompt_dribbling(home_team, away_team, current_score, minute, dribbler, opponent, dribbler_info, dribbler_stats, success, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a player dribbled past an opponent.
 
@@ -183,6 +185,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Dribbler: {dribbler}
 Defender: {opponent}
 {dribbler} Info: {dribbler_info}
@@ -192,7 +195,7 @@ Outcome: {success}
 OUTPUT:"""
 
 
-def prompt_tackle(home_team, away_team, current_score, minute, tackler, opponent, success, team_profile_away, team_profile_home):
+def prompt_tackle(home_team, away_team, current_score, minute, tackler, opponent, success, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a tackle is made.
 
@@ -238,6 +241,7 @@ Match: {home_team} vs {away_team}
 Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
+Team Involved: {team_involved}
 Event Minute: {minute}
 Tackler: {tackler}
 Opponent: {opponent}
@@ -246,7 +250,7 @@ Success: {success}
 OUTPUT:"""
 
 
-def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats, team_profile_away, team_profile_home):
+def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a foul is committed.
 
@@ -299,6 +303,7 @@ Match: {home_team} vs {away_team}
 Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
+Team Involved: {team_involved}
 Event Minute: {minute}
 Player: {player}
 Reason: {reason}
@@ -309,7 +314,7 @@ Card: {card}
 OUTPUT:"""
 
 
-def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success, team_profile_away, team_profile_home):
+def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a pass.
 
@@ -360,6 +365,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Passer: {passer}
 Receiver: {receiver}
 Pass Type: {pass_type}
@@ -368,7 +374,7 @@ Outcome: {success}
 OUTPUT:"""
 
 
-def prompt_var_call(home_team, away_team, current_score, minute, reason, team_profile_away, team_profile_home):
+def prompt_var_call(home_team, away_team, current_score, minute, reason, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a VAR review moment.
 
@@ -413,12 +419,13 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Reason: {reason}
 
 OUTPUT:"""
 
 
-def prompt_offside(home_team, away_team, current_score, minute, passer, receiver, team_profile_away, team_profile_home):
+def prompt_offside(home_team, away_team, current_score, minute, passer, receiver, team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing an offside call.
 
@@ -465,6 +472,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Passer: {passer}
 Receiver: {receiver}
 
@@ -517,7 +525,7 @@ Game Status: {game_status}
 OUTPUT:"""
 
 
-def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements,team_profile_away, team_profile_home):
+def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements,team_profile_away, team_profile_home, team_involved):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a substituition.
 
@@ -577,6 +585,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Current Score: {current_score}
 Event Minute: {minute}
+Team Involved: {team_involved}
 Player In: {player_in}
 Player Out: {player_out}
 {player_in} Info: {player_in_info}
@@ -594,16 +603,16 @@ def build_prompt(event_type, **kwargs):
     event_type = event_type.lower()
 
     events = {
-        "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements", "team_profile_away", "team_profile_home"]),
-        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "cursrent_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home"]),
-        "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "dribbler", "opponent", "dribbler_info", "dribbler_stats", "success", "team_profile_away", "team_profile_home"]),
-        "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent", "success", "team_profile_away", "team_profile_home"]),
-        "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats",  "team_profile_away", "team_profile_home"]),
-        "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success", "team_profile_away", "team_profile_home"]),
-        "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason", "team_profile_away", "team_profile_home"]),
-        "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "team_profile_away", "team_profile_home"]),
+        "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements", "team_profile_away", "team_profile_home", "team_involved"]),
+        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "cursrent_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home", "team_involved"]),
+        "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "dribbler", "opponent", "dribbler_info", "dribbler_stats", "success", "team_profile_away", "team_profile_home", "team_involved"]),
+        "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent", "success", "team_profile_away", "team_profile_home", "team_involved"]),
+        "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats",  "team_profile_away", "team_profile_home", "team_involved"]),
+        "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success", "team_profile_away", "team_profile_home", "team_involved"]),
+        "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason", "team_profile_away", "team_profile_home", "team_involved"]),
+        "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "team_profile_away", "team_profile_home", "team_involved"]),
         "start_half_end_game": (prompt_start_half_end_game, ["home_team", "away_team", "minute", "game_status", "team_profile_away", "team_profile_home"]),
-        "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements", "team_profile_away", "team_profile_home"])
+        "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements", "team_profile_away", "team_profile_home", "team_involved"])
     }
 
     if event_type not in events:
