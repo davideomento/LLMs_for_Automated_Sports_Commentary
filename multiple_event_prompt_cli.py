@@ -90,6 +90,9 @@ def main():
     team_profile_away = get_team_info(away_team['id'])
     team_players_away = get_team_players(away_team['id'])
 
+    minute = input("Enter event minute: ").strip()
+    current_score = input("Enter current score (e.g., 1-0): ").strip()
+
     event_types = {
         "1": "goal",
         "2": "foul",
@@ -101,8 +104,6 @@ def main():
         "8": "offside",
         "9": "start_half_end_game",
         "10": "substitution"
-        # add additional time
-        # add penalty, freekick, throw-in, corner, penalty 
     }
 
     print("\nSelect Event Type:")
@@ -115,9 +116,6 @@ def main():
         print("❌ Invalid choice.")
         return
 
-    minute = input("Enter event minute: ").strip()
-    current_score = input("Enter current score (e.g., 1-0): ").strip()
-    
     kwargs = {
         "minute": minute,
         "competition": competition_name,

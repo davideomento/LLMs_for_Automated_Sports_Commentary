@@ -3,7 +3,7 @@ def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goa
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, exhaustive, and natural-sounding commentary describing the moment a goal is scored.
 
-# STRICT GUIDELINES FOR GENERATING SPORTS COMMENTARY
+# STRICT GUIDELINES FOR GOAL COMMENTARY
 1. Use ONLY the exact data provided in the input. Do NOT invent, guess, or add any extra context.
 2. Do NOT describe events, actions, or outcomes that are not explicitly listed in the data.
 3. Always include the exact event minute and the current score as provided.
@@ -429,7 +429,7 @@ def prompt_offside(home_team, away_team, current_score, minute, passer, receiver
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing an offside call.
 
-# STRICT GUIDELINES FOR SIMPLE PASS COMMENTARY
+# STRICT GUIDELINES FOR OFFSIDE COMMENTARY
 1. Mention the passer and the receiver.
 2. Always include the exact event minute as provided.
 3. Do NOT invent, guess, or add any extra details not present in the data.
@@ -604,7 +604,7 @@ def build_prompt(event_type, **kwargs):
 
     events = {
         "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements", "team_profile_away", "team_profile_home", "team_involved"]),
-        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "cursrent_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home", "team_involved"]),
+        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "current_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home", "team_involved"]),
         "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "dribbler", "opponent", "dribbler_info", "dribbler_stats", "success", "team_profile_away", "team_profile_home", "team_involved"]),
         "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent", "success", "team_profile_away", "team_profile_home", "team_involved"]),
         "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats",  "team_profile_away", "team_profile_home", "team_involved"]),
