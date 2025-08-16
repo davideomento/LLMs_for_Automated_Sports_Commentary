@@ -9,7 +9,6 @@ from transfermarkt_api import (
     search_competition_by_name
 )
 from prompt_builder import build_prompt 
-from comment_generator import generate_with_mistral
 
 def fetch_player_data(name):
     """Search player and fetch info, stats, achievements."""
@@ -455,9 +454,7 @@ def main():
         prompt = build_prompt(event_type, **kwargs)
         print("\n=== Generated Prompt ===")
         print(prompt)
-        output = generate_with_mistral(prompt)
-        print("\n=== Output del modello Mistral ===")
-        print(output)
+
 
     except Exception as e:
         print(f"❌ Error: {e}")
