@@ -1,6 +1,3 @@
-# here the code to insert info or event
-
-# ===== IMPORT YOUR TRANSFERMARKT FUNCTIONS =====
 from transfermarkt_api import (
     search_player_by_name,
     get_player_info,
@@ -12,6 +9,7 @@ from transfermarkt_api import (
     search_competition_by_name
 )
 from prompt_builder import build_prompt 
+from comment_generator import generate_with_mistral
 
 
 def fetch_player_data(name):
@@ -105,7 +103,7 @@ def main():
         "6": "pass",
         "7": "var_call",
         "8": "offside",
-        "9": "start_end_game",
+        "9": "start_half_end_game",
         "10": "substitution"
     }
 
@@ -402,10 +400,12 @@ def main():
             "reason": reason
         })
 
-    elif event_type == "start_end_game":
+    elif event_type == "start_half_end_game":
         status_options = {
-            "0": "start",
-            "1": "end"
+            "0": "Start First Half",
+            "1": "End First Half",
+            "2": "Start Second Half",
+            "3": "End Second Half",
         }
         print("\nGame status options:")
         for k, v in status_options.items():
@@ -455,6 +455,10 @@ def main():
         prompt = build_prompt(event_type, **kwargs)
         print("\n=== Generated Prompt ===")
         print(prompt)
+        output = generate_with_mistral(prompt)
+        print("\n=== Output del modello Mistral ===")
+        print(output)
+
     except Exception as e:
         print(f"❌ Error: {e}")
 

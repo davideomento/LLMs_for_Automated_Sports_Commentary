@@ -1,27 +1,3 @@
-'''from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
-import re
-'''
-'''def trim_to_last_complete_sentence(text):
-    sentences = re.split(r'(?<=[.!?]) +', text)
-    return " ".join(sentences[:-1]) if len(sentences) > 1 else text
-
-
-
-# Load tokenizer and model from local path (e.g., Google Drive)
-drive_model_path = "/content/drive/MyDrive/mistral_model"
-
-tokenizer = AutoTokenizer.from_pretrained(drive_model_path)
-model = AutoModelForCausalLM.from_pretrained(
-    drive_model_path,
-    device_map="auto",
-    torch_dtype=torch.float16
-)
-
-model.eval()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")'''
-
-
 def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements, team_profile_away, team_profile_home):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
@@ -467,7 +443,7 @@ Receiver: {receiver}
 OUTPUT:"""
 
 
-def prompt_start_end_game(home_team, away_team, minute, game_status, team_profile_away, team_profile_home):
+def prompt_start_half_end_game(home_team, away_team, minute, game_status, team_profile_away, team_profile_home):
     return f"""TASK:
 Describe the start or end of the game in a single sentence.
 
@@ -492,8 +468,8 @@ OUTPUT:
 Example 2:
 INPUT:
 Match: HOME_TEAM vs AWAY_TEAM
-Team Profile Home: {team_profile_home}
-Team Profile Away: {team_profile_away}
+Team Profile Home: TEAM_PROFILE_AWAY
+Team Profile Away: TEAM_PROFILE_HOME
 Event Minute: 90
 Game Status: end
 
@@ -592,7 +568,7 @@ def build_prompt(event_type, **kwargs):
         "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success", "team_profile_away", "team_profile_home"]),
         "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason", "team_profile_away", "team_profile_home"]),
         "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "team_profile_away", "team_profile_home"]),
-        "start_end_game": (prompt_start_end_game, ["home_team", "away_team", "minute", "game_status", "team_profile_away", "team_profile_home"]),
+        "start_half_end_game": (prompt_start_half_end_game, ["home_team", "away_team", "minute", "game_status", "team_profile_away", "team_profile_home"]),
         "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements", "team_profile_away", "team_profile_home"])
     }
 
