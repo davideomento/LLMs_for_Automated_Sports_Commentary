@@ -93,6 +93,7 @@ def main():
     team_players_away = get_team_players(away_team['id'])
 
     minute = input("Enter event minute: ").strip()
+    current_score = input("Enter current score (e.g., 1-0): ").strip()
 
     event_types = {
         "1": "goal",
@@ -126,7 +127,7 @@ def main():
         "team_profile_away": team_profile_away,
         "team_players_home": team_players_home,
         "team_players_away": team_players_away,
-        "current_score": input("Current score (e.g., 1-0): ")
+        "current_score": current_score
     }
 
     # ==== EVENT-SPECIFIC PLAYER SELECTION ====
