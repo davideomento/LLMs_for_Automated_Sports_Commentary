@@ -3,12 +3,15 @@ def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goa
 Act as a live football commentator. Using only the provided match data, create a vivid,
 energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
 
-STRICT RULES:
-- Use ONLY the exact data provided below.
-- Do NOT invent, guess, or add any context such as how the goal was scored, player movements, or match events not listed.
-- If a statistic is missing, do NOT mention it.
-- Mention the exact event minute and current score as given.
-- Use all names exactly as provided without modification.
+# STRICT GUIDELINES FOR GENERATING SPORTS COMMENTARY
+1. Use ONLY the exact data provided in the input. Do NOT invent, guess, or add any extra context.
+2. Do NOT describe events, actions, or outcomes that are not explicitly listed in the data.
+3. Always include the exact event minute and the current score as provided.
+4. Use only the statistics or details present in the input to enrich the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+6. Avoid adding any assumptions about player movements, goals, fouls, or other events not specified.
+7. You should choose the most relevant information from the input to include in the commentary.
+
 
 EXAMPLE 1 :
 INPUT:
@@ -71,10 +74,14 @@ def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, 
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a lively, accurate single-sentence commentary describing an attempted shot.
 
-STRICT RULES:
-- Mention shooter, outcome, and position from which the shot was taken.
-- No invented details.
-- Mention exact event minute.
+# STRICT GUIDELINES FOR SHOT COMMENTARY
+1. Always mention the shooter, the outcome of the shot, and the position from which it was taken.
+2. Do NOT invent, guess, or add any extra details not present in the data.
+3. Always include the exact event minute as provided.
+4. Use only the input data to enrich the commentary; do not assume context or events.
+5. You should choose the most relevant information from the input to include in the commentary.
+6. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -132,10 +139,13 @@ def prompt_dribbling(home_team, away_team, current_score, minute, dribbler, oppo
     return f"""TASK:
 Describe in one energetic sentence a dribbling action between two players.
 
-STRICT RULES:
-- State clearly who dribbled who.
-- Mention event minute.
-- No invented details.
+# STRICT GUIDELINES FOR DRIBBLE COMMENTARY
+1. State clearly who dribbled past whom.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra details not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -186,10 +196,13 @@ def prompt_tackle(home_team, away_team, current_score, minute, tackler, opponent
     return f"""TASK:
 Describe a football tackle in one sentence.
 
-STRICT RULES:
-- Mention tackler and opponent.
-- Mention event minute.
-- No invented context.
+# STRICT GUIDELINES FOR TACKLE COMMENTARY
+1. Mention the tackler and the opponent involved.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra context not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -238,9 +251,13 @@ def prompt_foul(home_team, away_team, current_score, minute, player, reason, car
 Describe a foul event.
 
 STRICT RULES:
-- Mention fouling player, reason, and if given, the card color.
-- Mention event minute.
-- No invented details.
+# STRICT GUIDELINES FOR FOUL COMMENTARY
+1. Mention the fouling player, the reason for the foul, and if given, the card color.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra details not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -296,9 +313,13 @@ def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, p
     return f"""TASK:
 Describe a pass in football.
 
-STRICT RULES:
-- Mention passer, receiver, pass type, and outcome.
-- Mention event minute.
+# STRICT GUIDELINES FOR PASS COMMENTARY
+1. Mention the passer, the receiver, the type of pass, and the outcome.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra details not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -351,10 +372,13 @@ def prompt_var_call(home_team, away_team, current_score, minute, reason, team_pr
     return f"""TASK:
 Describe a VAR review moment.
 
-STRICT RULES:
-- Mention reason for the review.
-- Mention event minute.
-- No invented details.
+# STRICT GUIDELINES FOR REVIEW COMMENTARY
+1. Mention the reason for the review.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra details not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -398,9 +422,13 @@ def prompt_offside(home_team, away_team, current_score, minute, passer, receiver
     return f"""TASK:
 Describe an offside call.
 
-STRICT RULES:
-- Mention passer and receiver.
-- Mention event minute.
+# STRICT GUIDELINES FOR SIMPLE PASS COMMENTARY
+1. Mention the passer and the receiver.
+2. Always include the exact event minute as provided.
+3. Do NOT invent, guess, or add any extra details not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -447,10 +475,13 @@ def prompt_start_half_end_game(home_team, away_team, minute, game_status, team_p
     return f"""TASK:
 Describe the start or end of the game in a single sentence.
 
-STRICT RULES:
-- Mention whether it’s the start or end.
-- Mention the minute if relevant.
-- No invented match events.
+# STRICT GUIDELINES FOR MATCH START/END COMMENTARY
+1. Mention whether it is the start or end of the match.
+2. Mention the minute if it is relevant.
+3. Do NOT invent, guess, or add any extra match events not present in the data.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -491,10 +522,14 @@ def prompt_substitution(home_team, away_team, current_score, minute, player_in, 
     return f"""TASK:
 Describe a substitution.
 
-STRICT RULES:
-- Mention player coming in and player going out.
-- Mention event minute.
-- Use provided player info and stats only.
+# STRICT GUIDELINES FOR SUBSTITUTION COMMENTARY
+1. Mention the player coming in and the player going out.
+2. Always include the exact event minute as provided.
+3. Use only the player information and stats provided in the input.
+4. Do NOT invent, guess, or add any extra details not present in the data.
+5. You should choose the most relevant information from the input to include in the commentary.
+6. If multiple stats are relevant, cite all of them in the commentary.
+
 
 EXAMPLES:
 
@@ -561,7 +596,7 @@ def build_prompt(event_type, **kwargs):
 
     events = {
         "goal": (prompt_goal, ["home_team", "away_team", "current_score", "minute", "scorer", "assist", "goal_type", "shot_position", "scorer_info", "scorer_stats", "scorer_achievements", "team_profile_away", "team_profile_home"]),
-        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "current_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home"]),
+        "attempted_shot": (prompt_attempted_shot, ["home_team", "away_team", "cursrent_score", "minute", "shooter", "outcome", "shot_position", "shooter_info", "shooter_stats", "shooter_achievements", "team_profile_away", "team_profile_home"]),
         "dribbling": (prompt_dribbling, ["home_team", "away_team", "current_score", "minute", "dribbler", "opponent", "dribbler_info", "dribbler_stats", "success", "team_profile_away", "team_profile_home"]),
         "tackle": (prompt_tackle, ["home_team", "away_team", "current_score", "minute", "tackler", "opponent", "success", "team_profile_away", "team_profile_home"]),
         "foul": (prompt_foul, ["home_team", "away_team", "current_score", "minute", "player", "reason", "card", "player_info", "player_stats",  "team_profile_away", "team_profile_home"]),
