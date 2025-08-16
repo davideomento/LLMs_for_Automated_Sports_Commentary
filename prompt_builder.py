@@ -1,7 +1,7 @@
 def prompt_goal(home_team, away_team, current_score, minute, scorer, assist, goal_type, shot_position, player_info, player_stats, player_achievements, team_profile_away, team_profile_home):
     return f"""TASK:
 Act as a live football commentator. Using only the provided match data, create a vivid,
-energetic, and natural-sounding single-sentence commentary describing the moment a goal is scored.
+energetic, exhaustive, and natural-sounding commentary describing the moment a goal is scored.
 
 # STRICT GUIDELINES FOR GENERATING SPORTS COMMENTARY
 1. Use ONLY the exact data provided in the input. Do NOT invent, guess, or add any extra context.
@@ -72,7 +72,7 @@ OUTPUT:"""
 
 def prompt_attempted_shot(home_team, away_team, current_score, minute, shooter, outcome, shot_position, shooter_info, shooter_stats, shooter_achievements, team_profile_away, team_profile_home):
     return f"""TASK:
-Act as a live football commentator. Using only the provided match data, create a lively, accurate single-sentence commentary describing an attempted shot.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing an attempted shot.
 
 # STRICT GUIDELINES FOR SHOT COMMENTARY
 1. Always mention the shooter, the outcome of the shot, and the position from which it was taken.
@@ -137,7 +137,7 @@ OUTPUT:"""
 
 def prompt_dribbling(home_team, away_team, current_score, minute, dribbler, opponent, dribbler_info, dribbler_stats, success, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe in one energetic sentence a dribbling action between two players.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a player dribbled past an opponent.
 
 # STRICT GUIDELINES FOR DRIBBLE COMMENTARY
 1. State clearly who dribbled past whom.
@@ -194,7 +194,7 @@ OUTPUT:"""
 
 def prompt_tackle(home_team, away_team, current_score, minute, tackler, opponent, success, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe a football tackle in one sentence.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a tackle is made.
 
 # STRICT GUIDELINES FOR TACKLE COMMENTARY
 1. Mention the tackler and the opponent involved.
@@ -248,7 +248,7 @@ OUTPUT:"""
 
 def prompt_foul(home_team, away_team, current_score, minute, player, reason, card, player_info, player_stats, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe a foul event.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing the moment a foul is committed.
 
 STRICT RULES:
 # STRICT GUIDELINES FOR FOUL COMMENTARY
@@ -311,7 +311,7 @@ OUTPUT:"""
 
 def prompt_pass(home_team, away_team, current_score, minute, passer, receiver, pass_type, success, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe a pass in football.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a pass.
 
 # STRICT GUIDELINES FOR PASS COMMENTARY
 1. Mention the passer, the receiver, the type of pass, and the outcome.
@@ -370,7 +370,7 @@ OUTPUT:"""
 
 def prompt_var_call(home_team, away_team, current_score, minute, reason, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe a VAR review moment.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a VAR review moment.
 
 # STRICT GUIDELINES FOR REVIEW COMMENTARY
 1. Mention the reason for the review.
@@ -420,7 +420,7 @@ OUTPUT:"""
 
 def prompt_offside(home_team, away_team, current_score, minute, passer, receiver, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe an offside call.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing an offside call.
 
 # STRICT GUIDELINES FOR SIMPLE PASS COMMENTARY
 1. Mention the passer and the receiver.
@@ -473,8 +473,7 @@ OUTPUT:"""
 
 def prompt_start_half_end_game(home_team, away_team, minute, game_status, team_profile_away, team_profile_home):
     return f"""TASK:
-Describe the start or end of the game in a single sentence.
-
+Provide a detailed commentary on the start or end of the game, including relevant information about the teams if the game has just started, or the current/final score if the game has ended.
 # STRICT GUIDELINES FOR MATCH START/END COMMENTARY
 1. Mention whether it is the start or end of the match.
 2. Mention the minute if it is relevant.
@@ -520,7 +519,7 @@ OUTPUT:"""
 
 def prompt_substitution(home_team, away_team, current_score, minute, player_in, player_out, player_in_info, player_in_stats, player_out_info, player_out_stats, player_in_achievements, player_out_achievements,team_profile_away, team_profile_home):
     return f"""TASK:
-Describe a substitution.
+Act as a live football commentator. Using only the provided match data, create a lively, exhaustive, accurate commentary describing a substituition.
 
 # STRICT GUIDELINES FOR SUBSTITUTION COMMENTARY
 1. Mention the player coming in and the player going out.
