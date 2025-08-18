@@ -103,6 +103,7 @@ def main():
         "10": "substitution"
         # add additional time
         # add penalty, freekick, throw-in, corner, penalty 
+        # injury
     }
 
     print("\nSelect Event Type:")
@@ -117,7 +118,7 @@ def main():
 
     minute = input("Enter event minute: ").strip()
     current_score = input("Enter current score (e.g., 1-0): ").strip()
-    
+
     kwargs = {
         "minute": minute,
         "competition": competition_name,
@@ -395,7 +396,7 @@ def main():
             "6": "Mistaken identity",
             "7": "Other"
         }
-
+        # add outcome of var call
         print("\nVAR call reason options:")
         for k, v in var_reasons.items():
             print(f"{k}. {v}")

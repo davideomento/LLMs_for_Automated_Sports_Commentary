@@ -198,3 +198,10 @@ get_event_stats(…)
 
 # Transfer Market
 https://github.com/felipeall/transfermarkt-api
+
+# Extension
+From video to commentary directly
+Other sports in the same way
+Voice of past telechronist
+Eventi precedenti nel prompt+tiri in porta sostituzioni, infortuni ecc
+Enfsasi sulla base del minuto, risultato, posizione in classifica, eventi precedenti

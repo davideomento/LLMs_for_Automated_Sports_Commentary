@@ -7,10 +7,10 @@ import os
 def safe_filename(s):
     return re.sub(r'[^\w\-]', '_', s)
 
-video_id = "jwtWDBggd7c"
+video_id = "7yvlN9H3RQc"
 
 # Define match metadata
-match_name = "Arsenal VS Chelsea"
+match_name = "Newcastle VS Arsenal"
 match_date = "2025-04-25"
 competition_stage = "Premier League Matchday 25"
 
