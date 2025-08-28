@@ -6,11 +6,13 @@ energetic, exhaustive, and natural-sounding commentary describing the moment a g
 # STRICT GUIDELINES FOR GOAL COMMENTARY
 1. Use ONLY the exact data provided in the input. Do NOT invent, guess, or add any extra context.
 2. Do NOT describe events, actions, or outcomes that are not explicitly listed in the data.
-3. Always include the exact event minute and the current score as provided.
+3. Always include the current score as provided.
 4. Use only the statistics or details present in the input to enrich the commentary.
 5. If multiple stats are relevant, cite all of them in the commentary.
 6. Avoid adding any assumptions about player movements, goals, fouls, or other events not specified.
 7. You should choose the most relevant information from the input to include in the commentary.
+8. If Goal Type is "Other", do not mention it in the commentary.
+9. If Assist is "None", do not mention it in the commentary.
 
 
 EXAMPLE 1 :
@@ -78,10 +80,9 @@ Act as a live football commentator. Using only the provided match data, create a
 # STRICT GUIDELINES FOR SHOT COMMENTARY
 1. Always mention the shooter, the outcome of the shot, and the position from which it was taken.
 2. Do NOT invent, guess, or add any extra details not present in the data.
-3. Always include the exact event minute as provided.
-4. Use only the input data to enrich the commentary; do not assume context or events.
-5. You should choose the most relevant information from the input to include in the commentary.
-6. If multiple stats are relevant, cite all of them in the commentary.
+3. Use only the input data to enrich the commentary; do not assume context or events.
+4. You should choose the most relevant information from the input to include in the commentary.
+5. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -101,7 +102,7 @@ SHOOTER Stats: SHOOTER_STATS
 SHOOTER Achievements: SHOOTER_ACHIEVEMENTS
 
 OUTPUT:
-"Minute EVENT_MINUTE — SHOOTER fires a shot from SHOT_POSITION, but it’s OUTCOME. Score remains CURRENT_SCORE."
+"SHOOTER fires a shot from SHOT_POSITION, but it’s OUTCOME. Score remains CURRENT_SCORE."
 
 Example 2:
 INPUT:
@@ -118,7 +119,7 @@ Shooter Stats: SHOOTER_STATS
 Shooter Achievements: SHOOTER_ACHIEVEMENTS
 
 OUTPUT:
-"Minute EVENT_MINUTE — SHOOTER attempts a shot from SHOT_POSITION, but it goes OUTCOME. The score is still CURRENT_SCORE."
+"SHOOTER attempts a shot from SHOT_POSITION, but it goes OUTCOME. The score is still CURRENT_SCORE at minute EVENT_MINUTE."
 
 ---
 
@@ -143,10 +144,9 @@ Act as a live football commentator. Using only the provided match data, create a
 
 # STRICT GUIDELINES FOR DRIBBLE COMMENTARY
 1. State clearly who dribbled past whom.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra details not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2. Do NOT invent, guess, or add any extra details not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -163,7 +163,7 @@ Defender: DEFENDER
 Successful Dribbles: SUCCESSFUL_DRIBBLES
 
 OUTPUT:
-"Minute EVENT_MINUTE — DRIBBLER skilfully dribbles past DEFENDER, adding to his SUCCESSFUL_DRIBBLES successful dribbles this season. The score is CURRENT_SCORE."
+"DRIBBLER skilfully dribbles past DEFENDER, adding to his SUCCESSFUL_DRIBBLES successful dribbles this season."
 
 Example 2:
 INPUT:
@@ -201,10 +201,9 @@ Act as a live football commentator. Using only the provided match data, create a
 
 # STRICT GUIDELINES FOR TACKLE COMMENTARY
 1. Mention the tackler and the opponent involved.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra context not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2. Do NOT invent, guess, or add any extra context not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -220,7 +219,7 @@ Tackler: TACKLER
 Opponent: OPPONENT
 
 OUTPUT:
-"Minute EVENT_MINUTE — TACKLER executes a clean tackle against OPPONENT, halting the attack and keeping the score at CURRENT_SCORE."
+"TACKLER executes a clean tackle against OPPONENT, halting the attack and keeping the score at CURRENT_SCORE."
 
 Example 2:
 INPUT:
@@ -233,7 +232,7 @@ Tackler: TACKLER
 Opponent: OPPONENT
 
 OUTPUT:
-"At minute EVENT_MINUTE, TACKLER successfully challenges OPPONENT, disrupting their play and maintaining the current score of CURRENT_SCORE."
+"TACKLER successfully challenges OPPONENT, disrupting their play and maintaining the current score of CURRENT_SCORE."
 
 ---
 
@@ -257,10 +256,10 @@ Act as a live football commentator. Using only the provided match data, create a
 STRICT RULES:
 # STRICT GUIDELINES FOR FOUL COMMENTARY
 1. Mention the fouling player, the reason for the foul, and if given, the card color.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra details not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2. Do NOT invent, guess, or add any extra details not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
+5. If the foul reason is "Other", DO NOT MENTION IT in the commentary.
 
 
 EXAMPLES:
@@ -279,7 +278,7 @@ Player Info: PLAYER_INFO
 Player Stats: PLAYER_STATS  
 
 OUTPUT:
-"Minute EVENT_MINUTE — PLAYER commits a foul for REASON, receiving a CARD card. The score remains CURRENT_SCORE."
+"PLAYER commits a foul for REASON, receiving a CARD card. The score remains CURRENT_SCORE."
 
 Example 2:
 INPUT:
@@ -295,7 +294,7 @@ Player Info: PLAYER_INFO
 Player Stats: PLAYER_STATS
 
 OUTPUT:
-"At minute EVENT_MINUTE, PLAYER is penalized for REASON but avoids a card. The score is still CURRENT_SCORE."
+"PLAYER is penalized for REASON but avoids a card. The score is still CURRENT_SCORE."
 
 ---
 
@@ -320,10 +319,9 @@ Act as a live football commentator. Using only the provided match data, create a
 
 # STRICT GUIDELINES FOR PASS COMMENTARY
 1. Mention the passer, the receiver, the type of pass, and the outcome.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra details not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2 Do NOT invent, guess, or add any extra details not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -341,7 +339,7 @@ Pass Type: PASS_TYPE
 Outcome: SUCCESS
 
 OUTPUT:
-"Minute EVENT_MINUTE — PASSER delivers a PASS_TYPE pass to RECEIVER, resulting in a successful play. The score remains CURRENT_SCORE."
+"PASSER delivers a PASS_TYPE pass to RECEIVER, resulting in a successful play. The score remains CURRENT_SCORE."
 
 Example 2:
 INPUT:
@@ -356,7 +354,7 @@ Pass Type: PASS_TYPE
 Outcome: FAILURE
 
 OUTPUT:
-"At minute EVENT_MINUTE, PASSER attempts a PASS_TYPE pass to RECEIVER, but it fails to connect. The score stays at CURRENT_SCORE."
+"PASSER attempts a PASS_TYPE pass to RECEIVER, but it fails to connect. The score stays at CURRENT_SCORE."
 
 ---
 
@@ -380,10 +378,9 @@ Act as a live football commentator. Using only the provided match data, create a
 
 # STRICT GUIDELINES FOR REVIEW COMMENTARY
 1. Mention the reason for the review.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra details not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2. Do NOT invent, guess, or add any extra details not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -398,7 +395,7 @@ Event Minute: EVENT_MINUTE
 Reason: REASON
 
 OUTPUT:
-"At minute EVENT_MINUTE, the referee pauses the game for a VAR review due to REASON. The tension is palpable as everyone awaits the decision."
+"The referee pauses the game for a VAR review due to REASON. The tension is palpable as everyone awaits the decision."
 
 Example 2:
 INPUT:
@@ -410,7 +407,7 @@ Event Minute: EVENT_MINUTE
 Reason: REASON
 
 OUTPUT:
-"Minute EVENT_MINUTE — VAR review underway following REASON. The match momentarily halts as officials review the play."
+"VAR review underway following REASON. The match momentarily halts as officials review the play."
 
 ---
 
@@ -431,10 +428,9 @@ Act as a live football commentator. Using only the provided match data, create a
 
 # STRICT GUIDELINES FOR OFFSIDE COMMENTARY
 1. Mention the passer and the receiver.
-2. Always include the exact event minute as provided.
-3. Do NOT invent, guess, or add any extra details not present in the data.
-4. You should choose the most relevant information from the input to include in the commentary.
-5. If multiple stats are relevant, cite all of them in the commentary.
+2. Do NOT invent, guess, or add any extra details not present in the data.
+3. You should choose the most relevant information from the input to include in the commentary.
+4. If multiple stats are relevant, cite all of them in the commentary.
 
 
 EXAMPLES:
@@ -450,7 +446,7 @@ Passer: PASSER
 Receiver: RECEIVER
 
 OUTPUT:
-"At minute EVENT_MINUTE, the assistant referee raises the flag for offside against RECEIVER after a pass from PASSER. The attack is stopped immediately."
+"The assistant referee raises the flag for offside against RECEIVER after a pass from PASSER. The attack is stopped immediately."
 
 Example 2:
 INPUT:
@@ -463,7 +459,7 @@ Passer: PASSER
 Receiver: RECEIVER
 
 OUTPUT:
-"Minute EVENT_MINUTE — RECEIVER is caught offside following a through ball from PASSER, halting the promising move."
+"RECEIVER is caught offside following a through ball from PASSER, halting the promising move."
 
 ---
 
@@ -479,7 +475,7 @@ Receiver: {receiver}
 OUTPUT:"""
 
 
-def prompt_start_half_end_game(home_team, away_team, minute, game_status, team_profile_away, team_profile_home):
+def prompt_start_half_end_game(home_team, away_team, minute, current_score, game_status, team_profile_away, team_profile_home):
     return f"""TASK:
 Provide a detailed commentary on the start or end of the game, including relevant information about the teams if the game has just started, or the current/final score if the game has ended.
 # STRICT GUIDELINES FOR MATCH START/END COMMENTARY
@@ -521,6 +517,7 @@ Team Profile Home: {team_profile_home}
 Team Profile Away: {team_profile_away}
 Event Minute: {minute}
 Game Status: {game_status}
+Current Score: {current_score}
 
 OUTPUT:"""
 
@@ -546,7 +543,7 @@ Match: HOME_TEAM vs AWAY_TEAM
 Team Profile Home: TEAM_PROFILE_HOME
 Team Profile Away: TEAM_PROFILE_AWAY
 Current Score: CURRENT_SCORE
-Event Minute: 60
+Event Minute: EVENT_MINUTE
 Player In: PLAYER_IN
 Player Out: PLAYER_OUT
 PLAYER_IN Info: AGE: 28, POSITION: MIDFIELDER
@@ -557,7 +554,7 @@ Player In Achievements: PLAYER_IN_ACHIEVEMENTS
 Player Out Achievements: PLAYER_OUT_ACHIEVEMENTS
 
 OUTPUT:
-"Minute 60 — PLAYER_IN replaces PLAYER_OUT, bringing fresh energy to HOME_TEAM's midfield."
+"Minute EVENT_MINUTE — PLAYER_IN replaces PLAYER_OUT, bringing fresh energy to HOME_TEAM's midfield."
 
 Example 2:
 INPUT:
@@ -565,7 +562,7 @@ Match: HOME_TEAM vs AWAY_TEAM
 Team Profile Home: TEAM_PROFILE_HOME
 Team Profile Away: TEAM_PROFILE_AWAY
 Current Score: CURRENT_SCORE
-Event Minute: 75
+Event Minute: EVENT_MINUTE
 Player In: PLAYER_IN
 Player Out: PLAYER_OUT
 Player In Info: AGE: 22, POSITION: FORWARD
@@ -576,7 +573,7 @@ Player In Achievements: PLAYER_IN_ACHIEVEMENTS
 Player Out Achievements: PLAYER_OUT_ACHIEVEMENTS
 
 OUTPUT:
-"At minute 75, PLAYER_IN comes on for PLAYER_OUT to bolster HOME_TEAM's attacking options."
+"At minute EVENT_MINUTE, PLAYER_IN comes on for PLAYER_OUT to bolster HOME_TEAM's attacking options."
 
 ---
 
@@ -611,7 +608,7 @@ def build_prompt(event_type, **kwargs):
         "pass": (prompt_pass, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "pass_type", "success", "team_profile_away", "team_profile_home", "team_involved"]),
         "var_call": (prompt_var_call, ["home_team", "away_team", "current_score", "minute", "reason", "team_profile_away", "team_profile_home", "team_involved"]),
         "offside": (prompt_offside, ["home_team", "away_team", "current_score", "minute", "passer", "receiver", "team_profile_away", "team_profile_home", "team_involved"]),
-        "start_half_end_game": (prompt_start_half_end_game, ["home_team", "away_team", "minute", "game_status", "team_profile_away", "team_profile_home"]),
+        "start_half_end_game": (prompt_start_half_end_game, ["home_team", "away_team", "minute", "current_score", "game_status", "team_profile_away", "team_profile_home"]),
         "substitution": (prompt_substitution, ["home_team", "away_team", "current_score", "minute", "player_in", "player_out", "player_in_info", "player_in_stats", "player_out_info", "player_out_stats", "player_in_achievements", "player_out_achievements", "team_profile_away", "team_profile_home", "team_involved"])
     }
 
